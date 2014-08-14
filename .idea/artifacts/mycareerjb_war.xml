@@ -1,7 +1,7 @@
 <component name="ArtifactManager">
   <artifact type="war" name="mycareerjb:war">
     <output-path>$PROJECT_DIR$/target</output-path>
-    <root id="archive" name="mycareerjb-1.0.war">
+    <root id="archive" name="smart-motion-server.war">
       <element id="artifact" artifact-name="mycareerjb:war exploded" />
     </root>
   </artifact>
