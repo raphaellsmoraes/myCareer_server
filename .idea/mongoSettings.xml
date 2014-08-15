@@ -4,7 +4,8 @@
     <option name="serverConfigurations">
       <list>
         <ServerConfiguration>
-          <option name="label" value="myCareerMongo" />
+          <option name="connectOnIdeStartup" value="true" />
+          <option name="label" value="UserMongoLocal" />
           <option name="serverUrls">
             <list>
               <option value="localhost:27017" />

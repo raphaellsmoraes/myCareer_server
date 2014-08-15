@@ -1,6 +1,6 @@
 package domain.web.resource;
 
-import domain.model.*;
+import domain.model.User;
 import domain.repository.UserRepository;
 import domain.service.DisconnectUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -28,19 +26,16 @@ public class UserResource {
     @Autowired
     private DisconnectUserService disconnectUserService;
 
-    @RequestMapping(value = "/connect", method = RequestMethod.GET)
-    public ResponseEntity<String> receiveRequest(@RequestParam("username") String id,
-                                                 @RequestParam("facebookId") String facebookId,
-                                                 @RequestParam("birthday") Date birthday,
-                                                 @RequestParam("books") ArrayList<FavoriteBooks> favoriteBooks,
-                                                 @RequestParam("movies") ArrayList<FavoriteMovies> favoriteMovies,
-                                                 @RequestParam("musics") ArrayList<FavoriteMusics> favoriteMusics,
-                                                 @RequestParam("athletes") ArrayList<FavoriteAthletes> favoriteAthletes,
-                                                 @RequestParam("location") Location location,
-                                                 @RequestParam("gender") String gender,
-                                                 @RequestParam("personality") Personality personality) {
-        userRepository.save(User.newUser(id, facebookId, birthday, favoriteBooks, favoriteMovies, favoriteMusics, favoriteAthletes, location, gender, personality));
-        return new ResponseEntity<>("OK", HttpStatus.OK);
+    @RequestMapping(value = "/connect", method = RequestMethod.POST)
+    public HttpStatus newUser(User user) {
+        userRepository.save(User.newUser(user.getId(),
+                user.getName(), user.getFacebookId(),
+                user.getBirthday(),user.getFavoriteBooks(),
+                user.getFavoriteMovies(),user.getFavoriteMusics(),
+                user.getFavoriteAthletes(), user.getLocation(),
+                user.getGender(), user.getPersonality()));
+
+        return HttpStatus.OK;
     }
 
     @RequestMapping(value = "/disconnect", method = RequestMethod.GET)

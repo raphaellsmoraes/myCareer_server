@@ -21,6 +21,8 @@ public class User implements Serializable {
     @Id
     private String id;
 
+    private String name;
+
     private String facebookId;
 
     private Date birthday;
@@ -46,12 +48,13 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String id, String facebookId, Date birthday, ArrayList<FavoriteBooks> favoriteBooks,
+    public User(String id, String name, String facebookId, Date birthday, ArrayList<FavoriteBooks> favoriteBooks,
                 ArrayList<FavoriteMovies> favoriteMovies, ArrayList<FavoriteMusics> favoriteMusics,
                 ArrayList<FavoriteAthletes> favoriteAthletes, Location location, String gender,
                 Personality personality, String groupId) {
 
         this.id = id;
+        this.name = name;
         this.facebookId = facebookId;
         this.birthday = birthday;
         this.favoriteBooks = favoriteBooks;
@@ -64,12 +67,12 @@ public class User implements Serializable {
         this.groupId = groupId;
     }
 
-    public static User newUser(String id, String facebookId, Date birthday, ArrayList<FavoriteBooks> favoriteBooks,
+    public static User newUser(String id, String name, String facebookId, Date birthday, ArrayList<FavoriteBooks> favoriteBooks,
                                ArrayList<FavoriteMovies> favoriteMovies, ArrayList<FavoriteMusics> favoriteMusics,
                                ArrayList<FavoriteAthletes> favoriteAthletes, Location location, String gender,
                                Personality personality) {
 
-        return new User(id, facebookId, birthday, favoriteBooks,
+        return new User(id, name, facebookId, birthday, favoriteBooks,
                 favoriteMovies, favoriteMusics, favoriteAthletes, location,
                 gender, personality, NOT_CLUSTERED);
     }
@@ -160,5 +163,13 @@ public class User implements Serializable {
 
     public void setProfessions(ArrayList<Profession> professions) {
         this.professions = professions;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }
