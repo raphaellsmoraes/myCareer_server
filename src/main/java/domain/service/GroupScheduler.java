@@ -14,8 +14,8 @@ public class GroupScheduler {
     private GroupServiceCreator groupServiceCreator;
 
     @Scheduled(fixedRate = 5000)
-    public void run(){
-        groupServiceCreator.execute();
+    public void run() {
+        //groupServiceCreator.execute();
     }
 
 }

@@ -127,7 +127,7 @@
     </dependencies>
 
     <build>
-        <finalName>smart-motion-server</finalName>
+        <finalName>mycareer-server</finalName>
         <plugins>
             <plugin>
                 <artifactId>maven-compiler-plugin</artifactId>

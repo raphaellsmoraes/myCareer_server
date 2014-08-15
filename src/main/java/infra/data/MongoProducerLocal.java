@@ -17,7 +17,7 @@ public class MongoProducerLocal {
     @Bean
     public MongoTemplate mongoTemplate() throws Exception {
         MongoClient mongoClient = new MongoClient("127.0.0.1");
-        SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(mongoClient, "smart-motion");
+        SimpleMongoDbFactory simpleMongoDbFactory = new SimpleMongoDbFactory(mongoClient, "myCareer");
         MongoTemplate mongoTemplate = new MongoTemplate(simpleMongoDbFactory);
         return mongoTemplate;
     }

@@ -1,6 +1,6 @@
 <component name="ArtifactManager">
   <artifact type="exploded-war" name="mycareerjb:war exploded">
-    <output-path>$PROJECT_DIR$/target/smart-motion-server</output-path>
+    <output-path>$PROJECT_DIR$/target/mycareer-server</output-path>
     <root id="root">
       <element id="javaee-facet-resources" facet="mycareerjb/web/Web" />
       <element id="directory" name="WEB-INF">

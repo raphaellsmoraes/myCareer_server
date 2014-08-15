@@ -1,23 +1,10 @@
 package domain.service;
 
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
-import domain.NewConnection;
-import domain.User;
-import domain.UserSteps;
 import domain.repository.GroupRepository;
-import domain.repository.NewConnectionRepository;
 import domain.repository.UserRepository;
-import domain.repository.UserStepsRepository;
-import domain.specification.NewConnectionIsMatch;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Claudio Eduardo de Oliveira (claudioeduardo.deoliveira@sonymobile.com)
@@ -28,17 +15,12 @@ public class GroupServiceCreator {
     private static final Logger LOGGER = Logger.getLogger(GroupServiceCreator.class);
 
     @Autowired
-    private NewConnectionRepository newConnectionRepository;
-
-    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private GroupRepository groupRepository;
 
-    @Autowired
-    private UserStepsRepository userStepsRepository;
-
+    /*
     public void execute() {
         Stopwatch stopwatch = Stopwatch.createStarted();
         LOGGER.info(String.format("Starting create groups....Thread name %s", Thread.currentThread().getName()));
@@ -87,7 +69,7 @@ public class GroupServiceCreator {
                     for (NewConnection copyConnection : copyMatchedConnections) {
                         userRepository.save(User.newUserWithGroupId(copyConnection.getId(), copyConnection.getLat(), copyConnection.getLon(), user.getGroupId()));
                         newConnectionRepository.delete(copyConnection.getId());
-                        userStepsRepository.save(UserSteps.newUserSteps(copyConnection.getId(),user.getGroupId()));
+                        userStepsRepository.save(UserSteps.newUserSteps(copyConnection.getId(), user.getGroupId()));
                         createNewGroup = false;
                     }
                 }
@@ -99,7 +81,7 @@ public class GroupServiceCreator {
                 String groupId = groupRepository.nextGroupId();
                 for (NewConnection matchedConnection : matchedConnections) {
                     userRepository.save(User.newUserWithGroupId(matchedConnection.getId(), matchedConnection.getLat(), matchedConnection.getLon(), groupId));
-                    userStepsRepository.save(UserSteps.newUserSteps(matchedConnection.getId(),groupId));
+                    userStepsRepository.save(UserSteps.newUserSteps(matchedConnection.getId(), groupId));
                     newConnectionRepository.delete(matchedConnection.getId());
                 }
             }
@@ -109,6 +91,6 @@ public class GroupServiceCreator {
         stopwatch.stop();
         LOGGER.info(String.format("End create groups.Thread name %s", Thread.currentThread().getName()));
         LOGGER.info(String.format("Time for process groups %s milliseconds", String.valueOf(stopwatch.elapsed(TimeUnit.MILLISECONDS))));
-    }
+        */
 
 }
