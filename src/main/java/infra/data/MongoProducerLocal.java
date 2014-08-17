@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 /**
- * @author Claudio Eduardo de Oliveira (claudioeduardo.deoliveira@sonymobile.com)
+ * @author Raphael Moraes (raphael.lsmoraes@gmail.com)
  */
 @Configuration
 @Profile(value = "dev")

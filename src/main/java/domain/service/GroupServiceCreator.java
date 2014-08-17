@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
- * @author Claudio Eduardo de Oliveira (claudioeduardo.deoliveira@sonymobile.com)
+ * @author Raphael Moraes (raphael.lsmoraes@gmail.com)
  */
 @Service
 public class GroupServiceCreator {

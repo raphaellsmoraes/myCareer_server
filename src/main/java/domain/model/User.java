@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * @author Raphael Moraes (raphael.lsmoraes@gmail.com)
@@ -25,7 +24,7 @@ public class User implements Serializable {
 
     private String facebookId;
 
-    private Date birthday;
+    private String birthday;
 
     private ArrayList<FavoriteBooks> favoriteBooks;
 
@@ -48,12 +47,11 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String id, String name, String facebookId, Date birthday, ArrayList<FavoriteBooks> favoriteBooks,
+    public User(String name, String facebookId, String birthday, ArrayList<FavoriteBooks> favoriteBooks,
                 ArrayList<FavoriteMovies> favoriteMovies, ArrayList<FavoriteMusics> favoriteMusics,
                 ArrayList<FavoriteAthletes> favoriteAthletes, Location location, String gender,
                 Personality personality, String groupId) {
 
-        this.id = id;
         this.name = name;
         this.facebookId = facebookId;
         this.birthday = birthday;
@@ -67,14 +65,21 @@ public class User implements Serializable {
         this.groupId = groupId;
     }
 
-    public static User newUser(String id, String name, String facebookId, Date birthday, ArrayList<FavoriteBooks> favoriteBooks,
+    public static User newUser(String name, String facebookId, String birthday, ArrayList<FavoriteBooks> favoriteBooks,
                                ArrayList<FavoriteMovies> favoriteMovies, ArrayList<FavoriteMusics> favoriteMusics,
                                ArrayList<FavoriteAthletes> favoriteAthletes, Location location, String gender,
                                Personality personality) {
 
-        return new User(id, name, facebookId, birthday, favoriteBooks,
+        return new User(name, facebookId, birthday, favoriteBooks,
                 favoriteMovies, favoriteMusics, favoriteAthletes, location,
                 gender, personality, NOT_CLUSTERED);
+    }
+
+    public static User newUser(User user) {
+
+        return new User(user.getName(), user.getFacebookId(), user.getBirthday(), user.getFavoriteBooks(),
+                user.getFavoriteMovies(), user.getFavoriteMusics(), user.getFavoriteAthletes(), user.getLocation(),
+                user.getGender(), user.getPersonality(), NOT_CLUSTERED);
     }
 
     public String getId() {
@@ -93,11 +98,11 @@ public class User implements Serializable {
         this.facebookId = facebookId;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
@@ -171,5 +176,24 @@ public class User implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id='" + id + '\'' +
+                ", name='" + name + '\'' +
+                ", facebookId='" + facebookId + '\'' +
+                ", birthday=" + birthday +
+                ", favoriteBooks=" + favoriteBooks +
+                ", favoriteMovies=" + favoriteMovies +
+                ", favoriteMusics=" + favoriteMusics +
+                ", favoriteAthletes=" + favoriteAthletes +
+                ", location=" + location +
+                ", gender='" + gender + '\'' +
+                ", personality=" + personality +
+                ", professions=" + professions +
+                ", groupId='" + groupId + '\'' +
+                '}';
     }
 }

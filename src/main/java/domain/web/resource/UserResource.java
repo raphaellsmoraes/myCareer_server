@@ -1,15 +1,13 @@
 package domain.web.resource;
 
+import com.google.gson.Gson;
 import domain.model.User;
 import domain.repository.UserRepository;
 import domain.service.DisconnectUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -26,16 +24,15 @@ public class UserResource {
     @Autowired
     private DisconnectUserService disconnectUserService;
 
-    @RequestMapping(value = "/connect", method = RequestMethod.POST)
-    public HttpStatus newUser(User user) {
-        userRepository.save(User.newUser(user.getId(),
-                user.getName(), user.getFacebookId(),
-                user.getBirthday(),user.getFavoriteBooks(),
-                user.getFavoriteMovies(),user.getFavoriteMusics(),
-                user.getFavoriteAthletes(), user.getLocation(),
-                user.getGender(), user.getPersonality()));
+    @RequestMapping(value = "/connect", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity newUser(@RequestBody String data) {
 
-        return HttpStatus.OK;
+        Gson gson = new Gson();
+        User user = gson.fromJson(data, User.class);
+
+        userRepository.save(User.newUser(user));
+
+        return new ResponseEntity<>(user.toString(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/disconnect", method = RequestMethod.GET)

@@ -3,12 +3,22 @@
     <tr>
         <th>Id</th>
         <th>Users</th>
+        <th>facebookId</th>
+        <th>Birthday</th>
+        <th>Gender</th>
+        <th>Location</th>
+        <th>Clustered</th>
     </tr>
     </thead>
     <tbody>
     <tr ng-repeat="user in users | orderBy:'id' ">
-        <td>{{users.id}}</td>
-        <td>{{users.numbersOfUsers}}</td>
+        <td>{{user.id}}</td>
+        <td>{{user.name}}</td>
+        <td>{{user.facebookId}}</td>
+        <td>{{user.birthday}}</td>
+        <td>{{user.gender}}</td>
+        <td>{{user.location.name}}</td>
+        <td>{{user.groupId}}</td>
     </tr>
     </tbody>
 </table>

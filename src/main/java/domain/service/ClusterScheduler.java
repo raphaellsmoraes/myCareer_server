@@ -8,14 +8,14 @@ import org.springframework.stereotype.Component;
  * @author Raphael Moraes (raphael.lsmoraes@gmail.com)
  */
 @Component
-public class GroupScheduler {
+public class ClusterScheduler {
 
     @Autowired
-    private GroupServiceCreator groupServiceCreator;
+    private ClusterServiceCreator clusterServiceCreator;
 
     @Scheduled(fixedRate = 5000)
     public void run() {
-        //groupServiceCreator.execute();
+        clusterServiceCreator.execute();
     }
 
 }
