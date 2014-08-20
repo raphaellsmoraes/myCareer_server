@@ -4,11 +4,7 @@ import com.google.common.collect.Lists;
 import domain.model.User;
 import org.junit.Before;
 import org.junit.Test;
-import org.springframework.http.client.SimpleClientHttpRequestFactory;
-import org.springframework.web.client.RestTemplate;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
 import java.util.List;
 import java.util.UUID;
 
@@ -43,7 +39,7 @@ public class TestTenThousandUsers {
         }
     }
 
-    String URL = "http://localhost:8080/";
+    /*String URL = "http://localhost:8080/";
     SimpleClientHttpRequestFactory requestFactory = new SimpleClientHttpRequestFactory();
     Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("localhost", 8080));
     requestFactory.setProxy(proxy);
@@ -51,6 +47,6 @@ public class TestTenThousandUsers {
         /*for (User user : data) {
             restTemplate.getForEntity(String.format(URL, user.getId()), Void.class);
         }*/
-}
+
 
 }

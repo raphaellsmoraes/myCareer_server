@@ -25,7 +25,6 @@ public class ClusterServiceCreator {
     public void execute() {
 
         Stopwatch stopwatch = Stopwatch.createStarted();
-        LOGGER.info(String.format("Starting create groups....Thread name %s", Thread.currentThread().getName()));
         Set<User> users = Sets.newHashSet(userRepository.findAll());
         LOGGER.debug(String.format("Number of users %s", String.valueOf(users.size())));
 
