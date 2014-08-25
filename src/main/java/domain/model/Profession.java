@@ -13,16 +13,11 @@ public class Profession implements Serializable {
 
     @Id
     private String id;
-    private String jobId;
-    private String onetCode;
-    private String name;
+    private Occupation occupation;
     private double rating;
 
-    public Profession(String id, String jobId, String onetCode, String name, double rating) {
-        this.id = id;
-        this.jobId = jobId;
-        this.onetCode = onetCode;
-        this.name = name;
+    public Profession(Occupation occupation, double rating) {
+        this.occupation = occupation;
         this.rating = rating;
     }
 
@@ -37,28 +32,12 @@ public class Profession implements Serializable {
         this.id = id;
     }
 
-    public String getJobId() {
-        return jobId;
+    public Occupation getOccupation() {
+        return occupation;
     }
 
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
-    }
-
-    public String getOnetCode() {
-        return onetCode;
-    }
-
-    public void setOnetCode(String onetCode) {
-        this.onetCode = onetCode;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public void setOccupation(Occupation occupation) {
+        this.occupation = occupation;
     }
 
     public double getRating() {
@@ -73,9 +52,7 @@ public class Profession implements Serializable {
     public String toString() {
         return "Profession{" +
                 "id='" + id + '\'' +
-                ", jobId='" + jobId + '\'' +
-                ", onetCode='" + onetCode + '\'' +
-                ", name='" + name + '\'' +
+                ", occupation=" + occupation +
                 ", rating=" + rating +
                 '}';
     }

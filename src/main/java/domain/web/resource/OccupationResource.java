@@ -1,34 +1,52 @@
 package domain.web.resource;
 
-import com.google.gson.Gson;
 import domain.model.Occupation;
 import domain.repository.OccupationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
 
 /**
- * Created by rapha_000 on 19/08/2014.
+ * @author Raphael Moraes (raphael.lsmoraes@gmail.com)
  */
-@RestController
+@Controller
 @RequestMapping("/occupation")
 public class OccupationResource {
 
     @Autowired
     private OccupationRepository occupationRepository;
 
-    @RequestMapping(value = "/connect", method = RequestMethod.POST, consumes = "application/json")
-    public ResponseEntity newUser(@RequestBody String data) {
+    @RequestMapping(value = "/connect", method = RequestMethod.POST, consumes = "text/plain")
+    public ResponseEntity newOccupation(@RequestBody String data) {
 
-        Gson gson = new Gson();
-        Occupation occupation = gson.fromJson(data, Occupation.class);
+        String[] separatingOccupations = data.split("\t|\n");
+        Occupation parsedOccupation = null;
 
-        //occupationRepository.save(Occupation.newOccupation(occupation));
+        for (int i = 0; i < (separatingOccupations.length); i = i + 3) {
+            parsedOccupation = Occupation.newOccupation(new Occupation(separatingOccupations[i],
+                    separatingOccupations[i + 1], separatingOccupations[i + 2]));
 
-        return new ResponseEntity<>(occupation.toString(), HttpStatus.OK);
+            occupationRepository.save(parsedOccupation);
+        }
+
+        return new ResponseEntity<>(occupationRepository.count(), HttpStatus.OK);
     }
+
+
+    @RequestMapping(value = "/occupations", method = RequestMethod.GET)
+    public ResponseEntity<List<Occupation>> users() {
+        return new ResponseEntity<>(occupationRepository.findAll(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/numberOfOccupations", method = RequestMethod.GET)
+    public ResponseEntity<Long> numberOfOccupations() {
+        return new ResponseEntity<>(occupationRepository.count(), HttpStatus.OK);
+    }
+
 }

@@ -22,6 +22,13 @@ public class Occupation implements Serializable {
     public Occupation() {
     }
 
+    public Occupation(String id, String onet_soc, String title, String description) {
+        this.id = id;
+        this.onet_soc = onet_soc;
+        this.title = title;
+        this.description = description;
+    }
+
     public Occupation(String onet_soc, String title, String description) {
         this.onet_soc = onet_soc;
         this.title = title;
@@ -63,5 +70,15 @@ public class Occupation implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Occupation{" +
+                "id='" + id + '\'' +
+                ", onet_soc='" + onet_soc + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
