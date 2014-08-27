@@ -13,7 +13,7 @@ public class ClusterScheduler {
     @Autowired
     private ClusterServiceCreator clusterServiceCreator;
 
-    @Scheduled(fixedRate = 15000)
+    @Scheduled(fixedRate = 30000)
     public void run() {
         clusterServiceCreator.execute();
     }
