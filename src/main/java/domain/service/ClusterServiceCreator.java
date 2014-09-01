@@ -39,6 +39,9 @@ public class ClusterServiceCreator {
         ArrayList<Neighbor> normalSimilarity = getCollaborativeNeighborhood(baseUser, users);
         ArrayList<Neighbor> demographicSimillarity = getDemographicNeighborhood(baseUser, users);
 
+
+        stopwatch.stop();
+
         for (int i = 0; i <= (normalSimilarity.size() - 1); i++) {
 
             LOGGER.debug(String.format("[User: %s] ", normalSimilarity.get(i).getUser().getName())
@@ -50,9 +53,6 @@ public class ClusterServiceCreator {
             ));
 
         }
-
-
-        stopwatch.stop();
     }
 
     private ArrayList<Neighbor> getCollaborativeNeighborhood(User baseUser, List<User> users) {
