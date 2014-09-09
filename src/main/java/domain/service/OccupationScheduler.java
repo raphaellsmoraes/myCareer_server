@@ -13,8 +13,9 @@ public class OccupationScheduler {
     @Autowired
     private OccupationServiceCreator occupationServiceCreator;
 
-    @Scheduled(fixedRate = 6000000)
+    /* Schedule to every 24 hours */
+    @Scheduled(fixedRate = 86400000)
     public void run() {
-        occupationServiceCreator.execute();
+        //occupationServiceCreator.execute();
     }
 }

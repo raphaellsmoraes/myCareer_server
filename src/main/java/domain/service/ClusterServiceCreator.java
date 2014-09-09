@@ -33,15 +33,15 @@ public class ClusterServiceCreator {
         Stopwatch stopwatch = Stopwatch.createStarted();
 
         /* Retrieve all users to cluster */
-        User baseUser = userRepository.findOne("53f0e1a2be99d3c50b43d026");
-        List<User> users = userRepository.findAll();
+        //User baseUser = userRepository.findOne("53f0e1a2be99d3c50b43d026");
+        //List<User> users = userRepository.findAll();
 
-        ArrayList<Neighbor> normalSimilarity = getCollaborativeNeighborhood(baseUser, users);
-        ArrayList<Neighbor> demographicSimillarity = getDemographicNeighborhood(baseUser, users);
+        //ArrayList<Neighbor> normalSimilarity = getCollaborativeNeighborhood(baseUser, users);
+        // ArrayList<Neighbor> demographicSimillarity = getDemographicNeighborhood(baseUser, users);
 
 
         stopwatch.stop();
-
+ /*
         for (int i = 0; i <= (normalSimilarity.size() - 1); i++) {
 
             LOGGER.debug(String.format("[User: %s] ", normalSimilarity.get(i).getUser().getName())
@@ -52,7 +52,7 @@ public class ClusterServiceCreator {
                                     * demographicSimillarity.get(i).getCorrelation()))
             ));
 
-        }
+        }*/
     }
 
     private ArrayList<Neighbor> getCollaborativeNeighborhood(User baseUser, List<User> users) {

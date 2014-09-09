@@ -9,6 +9,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +50,16 @@ public class OccupationServiceCreator {
             /* Order and save top 10 similar occupations descriptions */
             List<Map.Entry<String, Integer>> sortedMap = MapUtilities.sortByValue(occupationDistance);
             Occupation occupation = occupationRepository.findOne(occupationList.get(i).getId());
-            //occupation.setSimilarOccupations(sortedMap);
+
+            ArrayList<String> similar = new ArrayList<>();
+            for (int j = 0; j <= 10; j++) {
+                if (!occupation.getId().equals(sortedMap.get(j).getKey())) {
+                    similar.add(sortedMap.get(j).getKey());
+                    // LOGGER.info(String.format("Occupation Name: %s", sortedMap.get(j).getKey()));
+                }
+            }
+
+            occupation.setSimilarOccupations(similar);
             occupationRepository.save(occupation);
         }
 

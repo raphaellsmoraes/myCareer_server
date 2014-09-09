@@ -4,6 +4,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by rapha_000 on 19/08/2014.
@@ -14,10 +15,10 @@ public class Occupation implements Serializable {
 
     @Id
     String id;
-
     String onet_soc;
     String title;
     String description;
+    List<String> similarOccupations;
 
     public Occupation() {
     }
@@ -72,13 +73,11 @@ public class Occupation implements Serializable {
         this.description = description;
     }
 
-    @Override
-    public String toString() {
-        return "Occupation{" +
-                "id='" + id + '\'' +
-                ", onet_soc='" + onet_soc + '\'' +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                '}';
+    public List<String> getSimilarOccupations() {
+        return similarOccupations;
+    }
+
+    public void setSimilarOccupations(List<String> similarOccupations) {
+        this.similarOccupations = similarOccupations;
     }
 }
