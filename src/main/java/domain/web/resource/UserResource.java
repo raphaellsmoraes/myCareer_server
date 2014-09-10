@@ -8,6 +8,7 @@ import domain.utils.ClusterUtils;
 import domain.utils.myCareerUtils;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * @author Raphael Moraes (raphael.lsmoraes@gmail.com)
@@ -27,6 +26,8 @@ import java.util.List;
 @Controller
 @RequestMapping("/user")
 public class UserResource {
+
+    private static final Logger LOGGER = Logger.getLogger(UserResource.class);
 
     @Autowired
     private UserRepository userRepository;
@@ -90,20 +91,18 @@ public class UserResource {
             ArrayList<Neighbor> normalSimilarity = getCollaborativeNeighborhood(baseUser, users);
             ArrayList<Neighbor> demographicSimillarity = getDemographicNeighborhood(baseUser, users);
 
-        /*
-        for (int i = 0; i <= (normalSimilarity.size() - 1); i++) {
 
-             LOGGER.debug(String.format("[User: %s] ", normalSimilarity.get(i).getUser().getName())
-                    + String.format("[Normal Correlation: %s] [Demographic Correlation : %s] [Similarity : %s]",
-                    normalSimilarity.get(i).getCorrelation(), demographicSimillarity.get(i).getCorrelation(),
-                    (normalSimilarity.get(i).getCorrelation() +
-                            (normalSimilarity.get(i).getCorrelation()
-                                    * demographicSimillarity.get(i).getCorrelation()))
-            ));
+            ArrayList<Neighbor> neighborhood = getMergedCorrelations(normalSimilarity, demographicSimillarity);
 
-        }*/
+            /* Order arrayList by similar users from highest to lowest correlation */
+            Collections.sort(neighborhood, new Comparator<Neighbor>() {
+                @Override
+                public int compare(Neighbor o1, Neighbor o2) {
+                    return o1.compare(o1, o2);
+                }
+            });
 
-            return new ResponseEntity<>(demographicSimillarity.toString(), HttpStatus.OK);
+            return new ResponseEntity<>(neighborhood.toArray().toString(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("id not found", HttpStatus.BAD_REQUEST);
         }
@@ -188,6 +187,27 @@ public class UserResource {
         }
 
         return neighborhood;
+    }
+
+    /* Merge Demographic and Normal Correlation and retrieve an List of Users */
+    private ArrayList<Neighbor> getMergedCorrelations(ArrayList<Neighbor> normalSimilarity, ArrayList<Neighbor> demographicSimilarity) {
+
+        int length = normalSimilarity.size() == demographicSimilarity.size() ? normalSimilarity.size() : 0;
+        ArrayList<Neighbor> neighboors = new ArrayList<>();
+
+        if (length != 0) {
+            for (int i = 0; i <= (length - 1); i++) {
+                if (normalSimilarity.get(i).getUser().getId().equals(demographicSimilarity.get(i).getUser().getId())) {
+
+                    neighboors.add(new Neighbor(normalSimilarity.get(i).getUser(),
+                            (normalSimilarity.get(i).getCorrelation() +
+                                    (normalSimilarity.get(i).getCorrelation()
+                                            * demographicSimilarity.get(i).getCorrelation()))));
+                }
+            }
+            return neighboors;
+
+        } else return null;
     }
 
     /* {18, 1829, 2949, 49, male, female} */
