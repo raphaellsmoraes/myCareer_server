@@ -8,45 +8,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0a4008c2-0e90-4ae0-91f5-3f2873979b3e" name="Default" comment="">
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\README.md" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\action_hooks\README.md" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\.gitkeep" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\catalina.policy" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\catalina.properties" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\context.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\logging.properties" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\postgresql_module.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\server.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\settings.base.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\settings.prod.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\settings.rhcloud.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\settings.stg.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\tomcat-users.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\config\web.xml" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\README.cron" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\daily\.gitignore" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\hourly\.gitignore" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\minutely\.gitignore" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\monthly\.gitignore" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\weekly\README" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\weekly\chrono.dat" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\weekly\chronograph" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\weekly\jobs.allow" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\cron\weekly\jobs.deny" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\markers\README.md" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\.openshift\markers\java7" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\README.md" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\src\main\java\.gitkeep" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\src\main\resources\.gitkeep" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\src\main\webapp\images\jbosscorp_logo.png" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\src\main\webapp\index.html" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\src\main\webapp\snoop.jsp" afterPath="" />
-      <change type="DELETED" beforePath="C:\Users\rapha_000\Documents\GitHub\myCareer_server\webapps\.gitkeep" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/domain/model/Neighbor.java" afterPath="$PROJECT_DIR$/src/main/java/domain/model/Neighbor.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/domain/model/User.java" afterPath="$PROJECT_DIR$/src/main/java/domain/model/User.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/domain/web/resource/UserResource.java" afterPath="$PROJECT_DIR$/src/main/java/domain/web/resource/UserResource.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" afterPath="$PROJECT_DIR$/src/main/webapp/WEB-INF/web.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="mycareerjb.iws" />
@@ -73,8 +34,8 @@
       <file leaf-file-name="UserResource.java" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/domain/web/resource/UserResource.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.6814346" vertical-offset="1581" max-vertical-offset="5066">
-              <caret line="137" column="9" selection-start-line="137" selection-start-column="9" selection-end-line="137" selection-end-column="9" />
+            <state vertical-scroll-proportion="0.89662445" vertical-offset="1581" max-vertical-offset="5066">
+              <caret line="143" column="56" selection-start-line="143" selection-start-column="56" selection-end-line="143" selection-end-column="56" />
               <folding />
             </state>
           </provider>
@@ -884,7 +845,7 @@
       <workItem from="1410227140846" duration="2614000" />
       <workItem from="1410480373143" duration="599000" />
       <workItem from="1410481337912" duration="8980000" />
-      <workItem from="1410722655932" duration="4743000" />
+      <workItem from="1410722655932" duration="5709000" />
     </task>
     <task id="LOCAL-00001" summary="Config server">
       <created>1407960149857</created>
@@ -938,7 +899,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="167569000" />
+    <option name="totallyTimeSpent" value="168535000" />
   </component>
   <component name="TodoView" selected-index="0">
     <todo-panel id="selected-file">
@@ -1418,8 +1379,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/domain/web/resource/UserResource.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.6814346" vertical-offset="1581" max-vertical-offset="5066">
-          <caret line="137" column="9" selection-start-line="137" selection-start-column="9" selection-end-line="137" selection-end-column="9" />
+        <state vertical-scroll-proportion="0.89662445" vertical-offset="1581" max-vertical-offset="5066">
+          <caret line="143" column="56" selection-start-line="143" selection-start-column="56" selection-end-line="143" selection-end-column="56" />
           <folding />
         </state>
       </provider>
