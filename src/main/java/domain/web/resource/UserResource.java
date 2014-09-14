@@ -18,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author Raphael Moraes (raphael.lsmoraes@gmail.com)
@@ -54,7 +57,7 @@ public class UserResource {
         ArrayList<Profession> profession = new ArrayList<Profession>();
 
         for (int i = 0; (i <= occupation.length - 1); i++) {
-            profession.add(new Profession(occupation[i], (double) myCareerUtils.randInt(0, 5)));
+            profession.add(new Profession(occupation[i], (double) myCareerUtils.randInt(-1, 5)));
         }
 
         User updatedUser = userRepository.findOne(id);
@@ -80,6 +83,11 @@ public class UserResource {
         return new ResponseEntity<>(userRepository.count(), HttpStatus.OK);
     }
 
+    /* @getRecommendations:
+     * This method implements the Hybrid recommender system, first it finds most similar users by
+     * checking their tastes (favorite books, musics, movies and athletes) them the next recommender
+     * algorithm filter users based on Demographic correlation (Location, gender and age), it also features
+     * their ratings on each product, the output will be a list with the items most appealing to the user */
     @RequestMapping(value = "/recommendations", method = RequestMethod.GET)
     public ResponseEntity<String> getRecommendations(@RequestParam("id") String id) {
 
@@ -88,6 +96,10 @@ public class UserResource {
         if (baseUser != null) {
             List<User> users = userRepository.findAll();
 
+            /* Knowledge Correlation */
+            ArrayList<Neighbor> tasteSimilarity = getKnowledgeNeighborhood(baseUser, users);
+
+            /* Demographic Correlation */
             ArrayList<Neighbor> normalSimilarity = getCollaborativeNeighborhood(baseUser, users);
             ArrayList<Neighbor> demographicSimillarity = getDemographicNeighborhood(baseUser, users);
 
@@ -95,20 +107,67 @@ public class UserResource {
             ArrayList<Neighbor> neighborhood = getMergedCorrelations(normalSimilarity, demographicSimillarity);
 
             /* Order arrayList by similar users from highest to lowest correlation */
-            Collections.sort(neighborhood, new Comparator<Neighbor>() {
-                @Override
-                public int compare(Neighbor o1, Neighbor o2) {
-                    return o1.compare(o1, o2);
-                }
-            });
+            Collections.sort(neighborhood);
 
-            return new ResponseEntity<>(neighborhood.toArray().toString(), HttpStatus.OK);
+            String result = "";
+            for (Neighbor n : neighborhood) {
+                result = result + " /" + n.getUser().getId() + ":" + n.getCorrelation() + "\n";
+            }
+
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } else {
             return new ResponseEntity<>("id not found", HttpStatus.BAD_REQUEST);
         }
 
     }
 
+    /* @getKnowledgeNeighborhood
+       returns an neighborhood of users based on tastes (movies, books, athletes and musics)
+    */
+    private ArrayList<Neighbor> getKnowledgeNeighborhood(User baseUser, List<User> users) {
+
+        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+
+        /* Neighborhood Users*/
+        ArrayList<Neighbor> neighborhood = new ArrayList<Neighbor>();
+
+        /* baseUser double array */
+        ArrayList<Double> baseArray = new ArrayList<Double>();
+        for (int looper = 0; looper <= (baseUser.getProfessions().size() - 1); looper++) {
+            baseArray.add(baseUser.getProfessions().get(looper).getRating());
+        }
+
+        /* search and remove requested id */
+        Iterator<User> iterator;
+        for (iterator = users.iterator(); iterator.hasNext(); ) {
+            User user = iterator.next();
+            if (user.getId().equals(baseUser.getId())) {
+                iterator.remove();
+            }
+        }
+
+        /* Creating correlations Matrix */
+        for (int i = 0; i <= (users.size() - 1); i++) {
+
+            ArrayList<Double> similarArray = new ArrayList<Double>();
+            for (int looper = 0; looper <= (users.get(i).getProfessions().size() - 1); looper++) {
+                similarArray.add(users.get(i).getProfessions().get(looper).getRating());
+            }
+
+            neighborhood.add(new Neighbor(
+                            users.get(i),
+                            pearsonsCorrelation.correlation(
+                                    ArrayUtils.toPrimitive(similarArray.toArray(new Double[similarArray.size()]))
+                                    , ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))))
+            );
+        }
+
+        return neighborhood;
+    }
+
+    /* @getCollaborativeNeighborhood
+    returns an neighborhood of users based on ratings
+     */
     private ArrayList<Neighbor> getCollaborativeNeighborhood(User baseUser, List<User> users) {
 
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
@@ -150,6 +209,9 @@ public class UserResource {
         return neighborhood;
     }
 
+    /* @getDemographicNeighborhood
+returns an neighborhood of users based on demographics (Age, gender and birthday)
+    */
     private ArrayList<Neighbor> getDemographicNeighborhood(User baseUser, List<User> users) {
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
 

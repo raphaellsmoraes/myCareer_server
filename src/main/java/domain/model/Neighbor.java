@@ -1,11 +1,9 @@
 package domain.model;
 
-import java.util.Comparator;
-
 /**
  * Created by rapha_000 on 24/08/2014.
  */
-public class Neighbor implements Comparator {
+public class Neighbor implements Comparable<Neighbor> {
 
     User user;
     double correlation;
@@ -31,11 +29,9 @@ public class Neighbor implements Comparator {
         this.correlation = correlation;
     }
 
+
     @Override
-    public int compare(Object o1, Object o2) {
-        if (((Neighbor) o1).getCorrelation() >= ((Neighbor) o2).getCorrelation())
-            return 0;
-        else
-            return 1;
+    public int compareTo(Neighbor o) {
+        return new Double(correlation).compareTo(o.correlation);
     }
 }

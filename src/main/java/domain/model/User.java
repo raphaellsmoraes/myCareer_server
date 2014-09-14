@@ -26,13 +26,13 @@ public class User implements Serializable {
 
     private String birthday;
 
-    private ArrayList<FavoriteBooks> favoriteBooks;
+    private ArrayList<FavoriteBooks> books;
 
-    private ArrayList<FavoriteMovies> favoriteMovies;
+    private ArrayList<FavoriteMovies> movies;
 
-    private ArrayList<FavoriteMusics> favoriteMusics;
+    private ArrayList<FavoriteMusics> music;
 
-    private ArrayList<FavoriteAthletes> favoriteAthletes;
+    private ArrayList<FavoriteAthletes> favorite_athletes;
 
     private Location location;
 
@@ -47,38 +47,38 @@ public class User implements Serializable {
     public User() {
     }
 
-    public User(String name, String facebookId, String birthday, ArrayList<FavoriteBooks> favoriteBooks,
-                ArrayList<FavoriteMovies> favoriteMovies, ArrayList<FavoriteMusics> favoriteMusics,
-                ArrayList<FavoriteAthletes> favoriteAthletes, Location location, String gender,
+    public User(String name, String facebookId, String birthday, ArrayList<FavoriteBooks> books,
+                ArrayList<FavoriteMovies> movies, ArrayList<FavoriteMusics> music,
+                ArrayList<FavoriteAthletes> favorite_athletes, Location location, String gender,
                 Personality personality, String groupId) {
 
         this.name = name;
         this.facebookId = facebookId;
         this.birthday = birthday;
-        this.favoriteBooks = favoriteBooks;
-        this.favoriteMovies = favoriteMovies;
-        this.favoriteMusics = favoriteMusics;
-        this.favoriteAthletes = favoriteAthletes;
+        this.books = books;
+        this.movies = movies;
+        this.music = music;
+        this.favorite_athletes = favorite_athletes;
         this.location = location;
         this.gender = gender;
         this.personality = personality;
         this.groupId = groupId;
     }
 
-    public static User newUser(String name, String facebookId, String birthday, ArrayList<FavoriteBooks> favoriteBooks,
-                               ArrayList<FavoriteMovies> favoriteMovies, ArrayList<FavoriteMusics> favoriteMusics,
-                               ArrayList<FavoriteAthletes> favoriteAthletes, Location location, String gender,
+    public static User newUser(String name, String facebookId, String birthday, ArrayList<FavoriteBooks> books,
+                               ArrayList<FavoriteMovies> movies, ArrayList<FavoriteMusics> music,
+                               ArrayList<FavoriteAthletes> favorite_athletes, Location location, String gender,
                                Personality personality) {
 
-        return new User(name, facebookId, birthday, favoriteBooks,
-                favoriteMovies, favoriteMusics, favoriteAthletes, location,
+        return new User(name, facebookId, birthday, books,
+                movies, music, favorite_athletes, location,
                 gender, personality, NOT_CLUSTERED);
     }
 
     public static User newUser(User user) {
 
-        return new User(user.getName(), user.getFacebookId(), user.getBirthday(), user.getFavoriteBooks(),
-                user.getFavoriteMovies(), user.getFavoriteMusics(), user.getFavoriteAthletes(), user.getLocation(),
+        return new User(user.getName(), user.getFacebookId(), user.getBirthday(), user.getBooks(),
+                user.getMovies(), user.getMusic(), user.getFavorite_athletes(), user.getLocation(),
                 user.getGender(), user.getPersonality(), NOT_CLUSTERED);
     }
 
@@ -106,52 +106,20 @@ public class User implements Serializable {
         this.birthday = birthday;
     }
 
-    public ArrayList<FavoriteBooks> getFavoriteBooks() {
-        return favoriteBooks;
+    public String getGroupId() {
+        return groupId;
     }
 
-    public void setFavoriteBooks(ArrayList<FavoriteBooks> favoriteBooks) {
-        this.favoriteBooks = favoriteBooks;
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
-    public ArrayList<FavoriteMovies> getFavoriteMovies() {
-        return favoriteMovies;
+    public ArrayList<Profession> getProfessions() {
+        return professions;
     }
 
-    public void setFavoriteMovies(ArrayList<FavoriteMovies> favoriteMovies) {
-        this.favoriteMovies = favoriteMovies;
-    }
-
-    public ArrayList<FavoriteMusics> getFavoriteMusics() {
-        return favoriteMusics;
-    }
-
-    public void setFavoriteMusics(ArrayList<FavoriteMusics> favoriteMusics) {
-        this.favoriteMusics = favoriteMusics;
-    }
-
-    public ArrayList<FavoriteAthletes> getFavoriteAthletes() {
-        return favoriteAthletes;
-    }
-
-    public void setFavoriteAthletes(ArrayList<FavoriteAthletes> favoriteAthletes) {
-        this.favoriteAthletes = favoriteAthletes;
-    }
-
-    public Location getLocation() {
-        return location;
-    }
-
-    public void setLocation(Location location) {
-        this.location = location;
-    }
-
-    public String getGender() {
-        return gender;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setProfessions(ArrayList<Profession> professions) {
+        this.professions = professions;
     }
 
     public Personality getPersonality() {
@@ -162,12 +130,52 @@ public class User implements Serializable {
         this.personality = personality;
     }
 
-    public ArrayList<Profession> getProfessions() {
-        return professions;
+    public String getGender() {
+        return gender;
     }
 
-    public void setProfessions(ArrayList<Profession> professions) {
-        this.professions = professions;
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public ArrayList<FavoriteAthletes> getFavorite_athletes() {
+        return favorite_athletes;
+    }
+
+    public void setFavorite_athletes(ArrayList<FavoriteAthletes> favorite_athletes) {
+        this.favorite_athletes = favorite_athletes;
+    }
+
+    public ArrayList<FavoriteMusics> getMusic() {
+        return music;
+    }
+
+    public void setMusic(ArrayList<FavoriteMusics> music) {
+        this.music = music;
+    }
+
+    public ArrayList<FavoriteMovies> getMovies() {
+        return movies;
+    }
+
+    public void setMovies(ArrayList<FavoriteMovies> movies) {
+        this.movies = movies;
+    }
+
+    public ArrayList<FavoriteBooks> getBooks() {
+        return books;
+    }
+
+    public void setBooks(ArrayList<FavoriteBooks> books) {
+        this.books = books;
     }
 
     public String getName() {
@@ -184,11 +192,11 @@ public class User implements Serializable {
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", facebookId='" + facebookId + '\'' +
-                ", birthday=" + birthday +
-                ", favoriteBooks=" + favoriteBooks +
-                ", favoriteMovies=" + favoriteMovies +
-                ", favoriteMusics=" + favoriteMusics +
-                ", favoriteAthletes=" + favoriteAthletes +
+                ", birthday='" + birthday + '\'' +
+                ", books=" + books +
+                ", movies=" + movies +
+                ", music=" + music +
+                ", favorite_athletes=" + favorite_athletes +
                 ", location=" + location +
                 ", gender='" + gender + '\'' +
                 ", personality=" + personality +
