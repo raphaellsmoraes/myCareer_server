@@ -26,9 +26,9 @@ public class ClusterUtils {
 
         /*
             Demographics Table
-            1 age ≤ 18
-            2 18 < age ≤ 29 each user belongs to a single age grouping
-            3 29 < age ≤ 49 the corresponding slot takes value 1 (true)
+            1 age <= 18
+            2 18 < age <= 29 each user belongs to a single age grouping
+            3 29 < age <= 49 the corresponding slot takes value 1 (true)
             4 age > 49 the rest of the features remain 0 (false)
          */
 
@@ -539,7 +539,7 @@ returns an neighborhood of users based on demographics (Age, gender and birthday
         /* Demographic Neighbors */
         ArrayList<DemographicNeighbor> udemNeighborhood = new ArrayList<DemographicNeighbor>();
 
-        /* Criando correlação do baseUser - Basicamente uma matrix demografica */
+        /* Criando correlacao do baseUser - Basicamente uma matrix demografica */
         DemographicNeighbor udemBaseUser = getDemographicUser(baseUser);
 
 
