@@ -167,16 +167,19 @@ public class ClusterUtils {
         double booksCorrelation = getBooksCorrelation(base, compare);
         LOGGER.info(String.format("booksCorrelation: %s", booksCorrelation));
 
-        /* get books correlation btw users */
-        //double moviesCorrelation = getMoviesCorrelation(base, compare);
+        /* get movies correlation btw users */
+        double moviesCorrelation = getMoviesCorrelation(base, compare);
+        LOGGER.info(String.format("moviesCorrelation: %s", moviesCorrelation));
 
-        /* get books correlation btw users */
-        //double athletesCorrelation = getBooksCorrelation(base, compare);
+        /* get atlhetes correlation btw users */
+        double athletesCorrelation = getAtlhetesCorrelation(base, compare);
+        LOGGER.info(String.format("athletesCorrelation: %s", athletesCorrelation));
 
-        /* get books correlation btw users */
-        //double musicCorrelation = getBooksCorrelation(base, compare);
+        /* get music correlation btw users */
+        double musicCorrelation = getMusicCorrelation(base, compare);
+        LOGGER.info(String.format("musicCorrelation: %s", musicCorrelation));
 
-        /* get books correlation btw users */
+        /* get personality correlation btw users */
         //double personalityCorrelation = getBooksCorrelation(base, compare);
 
         return new Neighbor(compare, booksCorrelation
@@ -263,129 +266,232 @@ public class ClusterUtils {
     }
 
     private static double getMoviesCorrelation(User base, User compare) {
-
+        LOGGER.info(String.format("Starting getMoviesCorrelation....%s", Thread.currentThread().getName()));
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         Neighbor result = null;
 
-        /* Create Array List of movies */
-        Set<FavoriteMovies> movies = new HashSet<>();
+        /* Create Array List of books */
+        ArrayList<FavoriteMovies> moviesObject = new ArrayList<>();
+        Set<String> rawMoviesId = new HashSet<>();
+        moviesObject.addAll(base.getMovies());
+        moviesObject.addAll(compare.getMovies());
 
-        /* Fill it with Base and compare books*/
+        for (FavoriteMovies e : moviesObject) {
+            rawMoviesId.add(e.getId());
+        }
+
+        ArrayList<String> movies = new ArrayList<>(rawMoviesId);
+
+        ArrayList<String> baseMovies = new ArrayList<>();
+        ArrayList<String> compareMovies = new ArrayList<>();
+
         for (FavoriteMovies e : base.getMovies()) {
-            movies.add(e);
+            baseMovies.add(e.getId());
         }
 
         for (FavoriteMovies e : compare.getMovies()) {
-            movies.add(e);
+            compareMovies.add(e.getId());
         }
+
 
         /* Creating matrix */
         ArrayList<Double> baseArray = new ArrayList<Double>();
         ArrayList<Double> compareArray = new ArrayList<Double>();
 
-        FavoriteMovies[] moviesArray = movies.toArray(new FavoriteMovies[movies.size()]);
-        for (int i = 0; i <= (moviesArray.length - 1); i++) {
+        String[] moviesArray = movies.toArray(new String[movies.size()]);
 
-            if (base.getMovies().contains(moviesArray[i])) {
-                baseArray.add(new Double(1.0));
-            } else {
-                baseArray.add(new Double(-1.0));
-            }
-
-            if (compare.getMovies().contains(moviesArray[i])) {
-                compareArray.add(new Double(1.0));
-            } else {
-                compareArray.add(new Double(-1.0));
-            }
+        String string = "";
+        for (String b : movies) {
+            string = string + "/" + b;
         }
 
-        return pearsonsCorrelation.correlation(
-                ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
-                , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+        LOGGER.info(String.format("Books: %s", string));
+
+        for (int i = 0; i <= (moviesArray.length - 1); i++) {
+
+            if (baseMovies.contains(moviesArray[i].toString())) {
+                LOGGER.info(String.format("Achou %s - %s", base.getId(), moviesArray[i].toString()));
+                baseArray.add(1.0);
+            } else {
+                LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), moviesArray[i].toString()));
+                baseArray.add(-1.0);
+            }
+
+            if (compareMovies.contains(moviesArray[i].toString())) {
+                LOGGER.info(String.format("Achou %s - %s", compare.getId(), moviesArray[i].toString()));
+                compareArray.add(1.0);
+            } else {
+                LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), moviesArray[i].toString()));
+                compareArray.add(-1.0);
+            }
+
+        }
+
+        if ((baseArray.size() >= 2 && (compareArray.size() >= 2))) {
+
+            return pearsonsCorrelation.correlation(
+                    ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
+                    , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+
+
+        } else if ((baseArray.size() > 0 && baseArray.size() < 2) || (compareArray.size() > 0 && compareArray.size() < 2)) {
+            return (ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[0]
+                    + ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[0]) / 2;
+
+        } else return 0.0;
     }
 
     private static double getMusicCorrelation(User base, User compare) {
-
+        LOGGER.info(String.format("Starting getMusicCorrelation....%s", Thread.currentThread().getName()));
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         Neighbor result = null;
 
-        /* Create Array List of movies */
-        Set<FavoriteMusics> music = new HashSet<>();
+        /* Create Array List of books */
+        ArrayList<FavoriteMusics> musicObject = new ArrayList<>();
+        Set<String> rawMusicId = new HashSet<>();
+        musicObject.addAll(base.getMusic());
+        musicObject.addAll(compare.getMusic());
 
-        /* Fill it with Base and compare books*/
+        for (FavoriteMusics e : musicObject) {
+            rawMusicId.add(e.getId());
+        }
+
+        ArrayList<String> musics = new ArrayList<>(rawMusicId);
+
+        ArrayList<String> baseMusics = new ArrayList<>();
+        ArrayList<String> compareMusics = new ArrayList<>();
+
         for (FavoriteMusics e : base.getMusic()) {
-            music.add(e);
+            baseMusics.add(e.getId());
         }
 
         for (FavoriteMusics e : compare.getMusic()) {
-            music.add(e);
+            compareMusics.add(e.getId());
         }
+
 
         /* Creating matrix */
         ArrayList<Double> baseArray = new ArrayList<Double>();
         ArrayList<Double> compareArray = new ArrayList<Double>();
 
-        FavoriteMusics[] musicArray = music.toArray(new FavoriteMusics[music.size()]);
-        for (int i = 0; i <= (musicArray.length - 1); i++) {
+        String[] musicsArray = musics.toArray(new String[musics.size()]);
 
-            if (base.getMusic().contains(musicArray[i])) {
-                baseArray.add(new Double(1.0));
-            } else {
-                baseArray.add(new Double(-1.0));
-            }
-
-            if (compare.getMusic().contains(musicArray[i])) {
-                compareArray.add(new Double(1.0));
-            } else {
-                compareArray.add(new Double(-1.0));
-            }
+        String string = "";
+        for (String b : musics) {
+            string = string + "/" + b;
         }
 
-        return pearsonsCorrelation.correlation(
-                ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
-                , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+        LOGGER.info(String.format("Books: %s", string));
+
+        for (int i = 0; i <= (musicsArray.length - 1); i++) {
+
+            if (baseMusics.contains(musicsArray[i].toString())) {
+                LOGGER.info(String.format("Achou %s - %s", base.getId(), musicsArray[i].toString()));
+                baseArray.add(1.0);
+            } else {
+                LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), musicsArray[i].toString()));
+                baseArray.add(-1.0);
+            }
+
+            if (compareMusics.contains(musicsArray[i].toString())) {
+                LOGGER.info(String.format("Achou %s - %s", compare.getId(), musicsArray[i].toString()));
+                compareArray.add(1.0);
+            } else {
+                LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), musicsArray[i].toString()));
+                compareArray.add(-1.0);
+            }
+
+        }
+
+        if ((baseArray.size() >= 2 && (compareArray.size() >= 2))) {
+
+            return pearsonsCorrelation.correlation(
+                    ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
+                    , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+
+
+        } else if ((baseArray.size() > 0 && baseArray.size() < 2) || (compareArray.size() > 0 && compareArray.size() < 2)) {
+            return (ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[0]
+                    + ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[0]) / 2;
+
+        } else return 0.0;
     }
 
     private static double getAtlhetesCorrelation(User base, User compare) {
 
+        LOGGER.info(String.format("Starting getAtlhetesCorrelation....%s", Thread.currentThread().getName()));
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         Neighbor result = null;
 
-        /* Create Array List of movies */
-        Set<FavoriteAthletes> atlhetes = new HashSet<>();
+        /* Create Array List of books */
+        ArrayList<FavoriteAthletes> atlhetesObject = new ArrayList<>();
+        Set<String> rawAtlhetesId = new HashSet<>();
+        atlhetesObject.addAll(base.getFavorite_athletes());
+        atlhetesObject.addAll(compare.getFavorite_athletes());
 
-        /* Fill it with Base and compare books*/
+        for (FavoriteAthletes e : atlhetesObject) {
+            rawAtlhetesId.add(e.getId());
+        }
+
+        ArrayList<String> atlhetes = new ArrayList<>(rawAtlhetesId);
+
+        ArrayList<String> baseAtlhetes = new ArrayList<>();
+        ArrayList<String> compareAtlhetes = new ArrayList<>();
+
         for (FavoriteAthletes e : base.getFavorite_athletes()) {
-            atlhetes.add(e);
+            baseAtlhetes.add(e.getId());
         }
 
         for (FavoriteAthletes e : compare.getFavorite_athletes()) {
-            atlhetes.add(e);
+            compareAtlhetes.add(e.getId());
         }
+
 
         /* Creating matrix */
         ArrayList<Double> baseArray = new ArrayList<Double>();
         ArrayList<Double> compareArray = new ArrayList<Double>();
 
-        FavoriteAthletes[] atlhetesArray = atlhetes.toArray(new FavoriteAthletes[atlhetes.size()]);
-        for (int i = 0; i <= (atlhetesArray.length - 1); i++) {
+        String[] atlhetesArray = atlhetes.toArray(new String[atlhetes.size()]);
 
-            if (base.getFavorite_athletes().contains(atlhetesArray[i])) {
-                baseArray.add(new Double(1.0));
-            } else {
-                baseArray.add(new Double(-1.0));
-            }
-
-            if (compare.getFavorite_athletes().contains(atlhetesArray[i])) {
-                compareArray.add(new Double(1.0));
-            } else {
-                compareArray.add(new Double(-1.0));
-            }
+        String string = "";
+        for (String b : atlhetes) {
+            string = string + "/" + b;
         }
 
-        return pearsonsCorrelation.correlation(
-                ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
-                , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+        LOGGER.info(String.format("Books: %s", string));
+
+        for (int i = 0; i <= (atlhetesArray.length - 1); i++) {
+
+            if (baseAtlhetes.contains(atlhetesArray[i].toString())) {
+                LOGGER.info(String.format("Achou %s - %s", base.getId(), atlhetesArray[i].toString()));
+                baseArray.add(1.0);
+            } else {
+                LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), atlhetesArray[i].toString()));
+                baseArray.add(-1.0);
+            }
+
+            if (compareAtlhetes.contains(atlhetesArray[i].toString())) {
+                LOGGER.info(String.format("Achou %s - %s", compare.getId(), atlhetesArray[i].toString()));
+                compareArray.add(1.0);
+            } else {
+                LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), atlhetesArray[i].toString()));
+                compareArray.add(-1.0);
+            }
+
+        }
+
+        if ((baseArray.size() >= 2 && (compareArray.size() >= 2))) {
+
+            return pearsonsCorrelation.correlation(
+                    ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
+                    , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+
+
+        } else if ((baseArray.size() > 0 && baseArray.size() < 2) || (compareArray.size() > 0 && compareArray.size() < 2)) {
+            return (ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[0]
+                    + ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[0]) / 2;
+
+        } else return 0.0;
     }
 
     /* @getCollaborativeNeighborhood
