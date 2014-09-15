@@ -105,7 +105,6 @@ public class ClusterServiceCreator {
         /* Demographic Neighbors */
         ArrayList<DemographicNeighbor> udemNeighborhood = new ArrayList<DemographicNeighbor>();
 
-        /* Criando correlação do baseUser - Basicamente uma matrix demografica */
         DemographicNeighbor udemBaseUser = getDemographicUser(baseUser);
 
 
