@@ -20,7 +20,6 @@
           <element id="library" level="project" name="Maven: org.springframework:spring-beans:4.0.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-context:4.0.3.RELEASE" />
           <element id="library" level="project" name="Maven: org.springframework:spring-expression:4.0.3.RELEASE" />
-          <element id="library" level="project" name="Maven: org.bigml:java-binding:1.0-SNAPSHOT" />
           <element id="library" level="project" name="Maven: com.google.code.gson:gson:2.2.4" />
           <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-mapper-asl:1.9.10" />
           <element id="library" level="project" name="Maven: org.codehaus.jackson:jackson-core-asl:1.9.10" />
