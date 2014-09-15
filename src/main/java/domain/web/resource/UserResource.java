@@ -100,11 +100,11 @@ public class UserResource {
             ArrayList<Neighbor> knowledgeSimilarity = ClusterUtils.getKnowledgeNeighborhood(baseUser, users);
 
             /* Demographic Correlation */
-            ArrayList<Neighbor> normalSimilarity = ClusterUtils.getCollaborativeNeighborhood(baseUser, users);
-            ArrayList<Neighbor> demographicSimillarity = ClusterUtils.getDemographicNeighborhood(baseUser, users);
+            //ArrayList<Neighbor> normalSimilarity = ClusterUtils.getCollaborativeNeighborhood(baseUser, users);
+            //ArrayList<Neighbor> demographicSimillarity = ClusterUtils.getDemographicNeighborhood(baseUser, users);
 
 
-            ArrayList<Neighbor> neighborhood = ClusterUtils.getMergedCorrelations(normalSimilarity, demographicSimillarity);
+            ArrayList<Neighbor> neighborhood = knowledgeSimilarity;//ClusterUtils.getMergedCorrelations(normalSimilarity, demographicSimillarity);
 
             /* Order arrayList by similar users from   highest to lowest correlation */
             //Collections.sort(neighborhood);

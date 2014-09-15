@@ -134,12 +134,6 @@ public class ClusterUtils {
         /* Neighborhood Users*/
         ArrayList<Neighbor> neighborhood = new ArrayList<Neighbor>();
 
-        /* baseUser double array */
-        ArrayList<Double> baseArray = new ArrayList<Double>();
-        for (int looper = 0; looper <= (baseUser.getProfessions().size() - 1); looper++) {
-            baseArray.add(baseUser.getProfessions().get(looper).getRating());
-        }
-
         /* search and remove requested id */
         Iterator<User> iterator;
         for (iterator = users.iterator(); iterator.hasNext(); ) {
@@ -182,9 +176,9 @@ public class ClusterUtils {
         /* get personality correlation btw users */
         //double personalityCorrelation = getBooksCorrelation(base, compare);
 
-        return new Neighbor(compare, booksCorrelation
-                /*((0.25 * booksCorrelation) + (0.25 * moviesCorrelation)
-                        + (0.25 * athletesCorrelation) + (0.25 * musicCorrelation))*/
+        return new Neighbor(compare,
+                ((0.25 * booksCorrelation) + (0.25 * moviesCorrelation)
+                        + (0.25 * athletesCorrelation) + (0.25 * musicCorrelation))
         );
     }
 
@@ -233,19 +227,19 @@ public class ClusterUtils {
         for (int i = 0; i <= (booksArray.length - 1); i++) {
 
             if (baseBooks.contains(booksArray[i].toString())) {
-                LOGGER.info(String.format("Achou %s - %s", base.getId(), booksArray[i].toString()));
+                //LOGGER.info(String.format("Achou %s - %s", base.getId(), booksArray[i].toString()));
                 baseArray.add(1.0);
             } else {
-                LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), booksArray[i].toString()));
-                baseArray.add(-1.0);
+                //LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), booksArray[i].toString()));
+                baseArray.add(0.0);
             }
 
             if (compareBooks.contains(booksArray[i].toString())) {
-                LOGGER.info(String.format("Achou %s - %s", compare.getId(), booksArray[i].toString()));
+                //LOGGER.info(String.format("Achou %s - %s", compare.getId(), booksArray[i].toString()));
                 compareArray.add(1.0);
             } else {
-                LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), booksArray[i].toString()));
-                compareArray.add(-1.0);
+                //LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), booksArray[i].toString()));
+                compareArray.add(0.0);
             }
 
         }
@@ -305,24 +299,24 @@ public class ClusterUtils {
             string = string + "/" + b;
         }
 
-        LOGGER.info(String.format("Books: %s", string));
+        LOGGER.info(String.format("Movies: %s", string));
 
         for (int i = 0; i <= (moviesArray.length - 1); i++) {
 
             if (baseMovies.contains(moviesArray[i].toString())) {
-                LOGGER.info(String.format("Achou %s - %s", base.getId(), moviesArray[i].toString()));
+                //LOGGER.info(String.format("Achou %s - %s", base.getId(), moviesArray[i].toString()));
                 baseArray.add(1.0);
             } else {
-                LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), moviesArray[i].toString()));
-                baseArray.add(-1.0);
+                //LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), moviesArray[i].toString()));
+                baseArray.add(0.0);
             }
 
             if (compareMovies.contains(moviesArray[i].toString())) {
-                LOGGER.info(String.format("Achou %s - %s", compare.getId(), moviesArray[i].toString()));
+                //LOGGER.info(String.format("Achou %s - %s", compare.getId(), moviesArray[i].toString()));
                 compareArray.add(1.0);
             } else {
-                LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), moviesArray[i].toString()));
-                compareArray.add(-1.0);
+                //LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), moviesArray[i].toString()));
+                compareArray.add(0.0);
             }
 
         }
@@ -381,24 +375,24 @@ public class ClusterUtils {
             string = string + "/" + b;
         }
 
-        LOGGER.info(String.format("Books: %s", string));
+        LOGGER.info(String.format("Music: %s", string));
 
         for (int i = 0; i <= (musicsArray.length - 1); i++) {
 
             if (baseMusics.contains(musicsArray[i].toString())) {
-                LOGGER.info(String.format("Achou %s - %s", base.getId(), musicsArray[i].toString()));
+                //LOGGER.info(String.format("Achou %s - %s", base.getId(), musicsArray[i].toString()));
                 baseArray.add(1.0);
             } else {
-                LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), musicsArray[i].toString()));
-                baseArray.add(-1.0);
+                // LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), musicsArray[i].toString()));
+                baseArray.add(0.0);
             }
 
             if (compareMusics.contains(musicsArray[i].toString())) {
-                LOGGER.info(String.format("Achou %s - %s", compare.getId(), musicsArray[i].toString()));
+                //LOGGER.info(String.format("Achou %s - %s", compare.getId(), musicsArray[i].toString()));
                 compareArray.add(1.0);
             } else {
-                LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), musicsArray[i].toString()));
-                compareArray.add(-1.0);
+                // LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), musicsArray[i].toString()));
+                compareArray.add(0.0);
             }
 
         }
@@ -408,11 +402,6 @@ public class ClusterUtils {
             return pearsonsCorrelation.correlation(
                     ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
                     , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
-
-
-        } else if ((baseArray.size() > 0 && baseArray.size() < 2) || (compareArray.size() > 0 && compareArray.size() < 2)) {
-            return (ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[0]
-                    + ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[0]) / 2;
 
         } else return 0.0;
     }
@@ -458,24 +447,24 @@ public class ClusterUtils {
             string = string + "/" + b;
         }
 
-        LOGGER.info(String.format("Books: %s", string));
+        LOGGER.info(String.format("Atlhetes: %s", string));
 
         for (int i = 0; i <= (atlhetesArray.length - 1); i++) {
 
             if (baseAtlhetes.contains(atlhetesArray[i].toString())) {
-                LOGGER.info(String.format("Achou %s - %s", base.getId(), atlhetesArray[i].toString()));
+                //LOGGER.info(String.format("Achou %s - %s", base.getId(), atlhetesArray[i].toString()));
                 baseArray.add(1.0);
             } else {
-                LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), atlhetesArray[i].toString()));
-                baseArray.add(-1.0);
+                //LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), atlhetesArray[i].toString()));
+                baseArray.add(0.0);
             }
 
             if (compareAtlhetes.contains(atlhetesArray[i].toString())) {
-                LOGGER.info(String.format("Achou %s - %s", compare.getId(), atlhetesArray[i].toString()));
+                //LOGGER.info(String.format("Achou %s - %s", compare.getId(), atlhetesArray[i].toString()));
                 compareArray.add(1.0);
             } else {
-                LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), atlhetesArray[i].toString()));
-                compareArray.add(-1.0);
+                //LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), atlhetesArray[i].toString()));
+                compareArray.add(0.0);
             }
 
         }
