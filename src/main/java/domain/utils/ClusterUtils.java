@@ -1,13 +1,20 @@
 package domain.utils;
 
+import domain.model.*;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
+import org.apache.log4j.Logger;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * Created by rapha_000 on 26/08/2014.
  */
 public class ClusterUtils {
 
+    private static final Logger LOGGER = Logger.getLogger(ClusterUtils.class);
     public static String CLUSTER_EIGHTEEN = "18";
     public static String CLUSTER_OVER_EIGHTEEN_UNDER_TWENTYNINE = "18~29";
     public static String CLUSTER_OVER_TWENTYNINE_UNDER_FORTYNINE = "29~49";
@@ -119,4 +126,415 @@ public class ClusterUtils {
         return cost[len0 - 1];
     }
 
+    /* @getKnowledgeNeighborhood
+   returns an neighborhood of users based on tastes (movies, books, athletes and musics)
+    */
+    public static ArrayList<Neighbor> getKnowledgeNeighborhood(User baseUser, List<User> users) {
+
+        /* Neighborhood Users*/
+        ArrayList<Neighbor> neighborhood = new ArrayList<Neighbor>();
+
+        /* baseUser double array */
+        ArrayList<Double> baseArray = new ArrayList<Double>();
+        for (int looper = 0; looper <= (baseUser.getProfessions().size() - 1); looper++) {
+            baseArray.add(baseUser.getProfessions().get(looper).getRating());
+        }
+
+        /* search and remove requested id */
+        Iterator<User> iterator;
+        for (iterator = users.iterator(); iterator.hasNext(); ) {
+            User user = iterator.next();
+            if (user.getId().equals(baseUser.getId())) {
+                iterator.remove();
+            }
+        }
+
+        /* Creating correlations Matrix */
+        for (int i = 0; i <= (users.size() - 1); i++) {
+
+            /* Add to neighborhood */
+            neighborhood.add(
+                    setKnowledgeCorrelation(baseUser, users.get(i))
+            );
+        }
+
+        return neighborhood;
+    }
+
+    private static Neighbor setKnowledgeCorrelation(User base, User compare) {
+
+        /* get books correlation btw users */
+        double booksCorrelation = getBooksCorrelation(base, compare);
+        LOGGER.info(String.format("booksCorrelation: %s", booksCorrelation));
+
+        /* get books correlation btw users */
+        //double moviesCorrelation = getMoviesCorrelation(base, compare);
+
+        /* get books correlation btw users */
+        //double athletesCorrelation = getBooksCorrelation(base, compare);
+
+        /* get books correlation btw users */
+        //double musicCorrelation = getBooksCorrelation(base, compare);
+
+        /* get books correlation btw users */
+        //double personalityCorrelation = getBooksCorrelation(base, compare);
+
+        return new Neighbor(compare, booksCorrelation
+                /*((0.25 * booksCorrelation) + (0.25 * moviesCorrelation)
+                        + (0.25 * athletesCorrelation) + (0.25 * musicCorrelation))*/
+        );
+    }
+
+    private static double getBooksCorrelation(User base, User compare) {
+        LOGGER.info(String.format("Starting getBooksCorrelation....%s", Thread.currentThread().getName()));
+        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+        Neighbor result = null;
+
+        /* Create Array List of books */
+        ArrayList<FavoriteBooks> booksObject = new ArrayList<>();
+        Set<String> rawBooksId = new HashSet<>();
+        booksObject.addAll(base.getBooks());
+        booksObject.addAll(compare.getBooks());
+
+        for (FavoriteBooks e : booksObject) {
+            rawBooksId.add(e.getId());
+        }
+
+        ArrayList<String> books = new ArrayList<>(rawBooksId);
+
+        ArrayList<String> baseBooks = new ArrayList<>();
+        ArrayList<String> compareBooks = new ArrayList<>();
+
+        for (FavoriteBooks e : base.getBooks()) {
+            baseBooks.add(e.getId());
+        }
+
+        for (FavoriteBooks e : compare.getBooks()) {
+            compareBooks.add(e.getId());
+        }
+
+
+        /* Creating matrix */
+        ArrayList<Double> baseArray = new ArrayList<Double>();
+        ArrayList<Double> compareArray = new ArrayList<Double>();
+
+        String[] booksArray = books.toArray(new String[books.size()]);
+
+        String string = "";
+        for (String b : books) {
+            string = string + "/" + b;
+        }
+
+        LOGGER.info(String.format("Books: %s", string));
+
+        for (int i = 0; i <= (booksArray.length - 1); i++) {
+
+            if (baseBooks.contains(booksArray[i].toString())) {
+                LOGGER.info(String.format("Achou %s - %s", base.getId(), booksArray[i].toString()));
+                baseArray.add(1.0);
+            } else {
+                LOGGER.info(String.format("Nao Achou %s - %s", base.getId(), booksArray[i].toString()));
+                baseArray.add(-1.0);
+            }
+
+            if (compareBooks.contains(booksArray[i].toString())) {
+                LOGGER.info(String.format("Achou %s - %s", compare.getId(), booksArray[i].toString()));
+                compareArray.add(1.0);
+            } else {
+                LOGGER.info(String.format("Nao Achou %s - %s", compare.getId(), booksArray[i].toString()));
+                compareArray.add(-1.0);
+            }
+
+        }
+
+        if ((baseArray.size() >= 2 && (compareArray.size() >= 2))) {
+
+            return pearsonsCorrelation.correlation(
+                    ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
+                    , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+
+
+        } else if ((baseArray.size() > 0 && baseArray.size() < 2) || (compareArray.size() > 0 && compareArray.size() < 2)) {
+            return (ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[0]
+                    + ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[0]) / 2;
+
+        } else return 0.0;
+
+    }
+
+    private static double getMoviesCorrelation(User base, User compare) {
+
+        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+        Neighbor result = null;
+
+        /* Create Array List of movies */
+        Set<FavoriteMovies> movies = new HashSet<>();
+
+        /* Fill it with Base and compare books*/
+        for (FavoriteMovies e : base.getMovies()) {
+            movies.add(e);
+        }
+
+        for (FavoriteMovies e : compare.getMovies()) {
+            movies.add(e);
+        }
+
+        /* Creating matrix */
+        ArrayList<Double> baseArray = new ArrayList<Double>();
+        ArrayList<Double> compareArray = new ArrayList<Double>();
+
+        FavoriteMovies[] moviesArray = movies.toArray(new FavoriteMovies[movies.size()]);
+        for (int i = 0; i <= (moviesArray.length - 1); i++) {
+
+            if (base.getMovies().contains(moviesArray[i])) {
+                baseArray.add(new Double(1.0));
+            } else {
+                baseArray.add(new Double(-1.0));
+            }
+
+            if (compare.getMovies().contains(moviesArray[i])) {
+                compareArray.add(new Double(1.0));
+            } else {
+                compareArray.add(new Double(-1.0));
+            }
+        }
+
+        return pearsonsCorrelation.correlation(
+                ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
+                , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+    }
+
+    private static double getMusicCorrelation(User base, User compare) {
+
+        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+        Neighbor result = null;
+
+        /* Create Array List of movies */
+        Set<FavoriteMusics> music = new HashSet<>();
+
+        /* Fill it with Base and compare books*/
+        for (FavoriteMusics e : base.getMusic()) {
+            music.add(e);
+        }
+
+        for (FavoriteMusics e : compare.getMusic()) {
+            music.add(e);
+        }
+
+        /* Creating matrix */
+        ArrayList<Double> baseArray = new ArrayList<Double>();
+        ArrayList<Double> compareArray = new ArrayList<Double>();
+
+        FavoriteMusics[] musicArray = music.toArray(new FavoriteMusics[music.size()]);
+        for (int i = 0; i <= (musicArray.length - 1); i++) {
+
+            if (base.getMusic().contains(musicArray[i])) {
+                baseArray.add(new Double(1.0));
+            } else {
+                baseArray.add(new Double(-1.0));
+            }
+
+            if (compare.getMusic().contains(musicArray[i])) {
+                compareArray.add(new Double(1.0));
+            } else {
+                compareArray.add(new Double(-1.0));
+            }
+        }
+
+        return pearsonsCorrelation.correlation(
+                ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
+                , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+    }
+
+    private static double getAtlhetesCorrelation(User base, User compare) {
+
+        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+        Neighbor result = null;
+
+        /* Create Array List of movies */
+        Set<FavoriteAthletes> atlhetes = new HashSet<>();
+
+        /* Fill it with Base and compare books*/
+        for (FavoriteAthletes e : base.getFavorite_athletes()) {
+            atlhetes.add(e);
+        }
+
+        for (FavoriteAthletes e : compare.getFavorite_athletes()) {
+            atlhetes.add(e);
+        }
+
+        /* Creating matrix */
+        ArrayList<Double> baseArray = new ArrayList<Double>();
+        ArrayList<Double> compareArray = new ArrayList<Double>();
+
+        FavoriteAthletes[] atlhetesArray = atlhetes.toArray(new FavoriteAthletes[atlhetes.size()]);
+        for (int i = 0; i <= (atlhetesArray.length - 1); i++) {
+
+            if (base.getFavorite_athletes().contains(atlhetesArray[i])) {
+                baseArray.add(new Double(1.0));
+            } else {
+                baseArray.add(new Double(-1.0));
+            }
+
+            if (compare.getFavorite_athletes().contains(atlhetesArray[i])) {
+                compareArray.add(new Double(1.0));
+            } else {
+                compareArray.add(new Double(-1.0));
+            }
+        }
+
+        return pearsonsCorrelation.correlation(
+                ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
+                , ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()])));
+    }
+
+    /* @getCollaborativeNeighborhood
+    returns an neighborhood of users based on ratings
+     */
+    public static ArrayList<Neighbor> getCollaborativeNeighborhood(User baseUser, List<User> users) {
+
+        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+
+        /* Neighborhood Users*/
+        ArrayList<Neighbor> neighborhood = new ArrayList<Neighbor>();
+
+        /* baseUser double array */
+        ArrayList<Double> baseArray = new ArrayList<Double>();
+        for (int looper = 0; looper <= (baseUser.getProfessions().size() - 1); looper++) {
+            baseArray.add(baseUser.getProfessions().get(looper).getRating());
+        }
+
+        /* search and remove requested id */
+        Iterator<User> iterator;
+        for (iterator = users.iterator(); iterator.hasNext(); ) {
+            User user = iterator.next();
+            if (user.getId().equals(baseUser.getId())) {
+                iterator.remove();
+            }
+        }
+
+        /* Creating correlations Matrix */
+        for (int i = 0; i <= (users.size() - 1); i++) {
+
+            ArrayList<Double> similarArray = new ArrayList<Double>();
+            for (int looper = 0; looper <= (users.get(i).getProfessions().size() - 1); looper++) {
+                similarArray.add(users.get(i).getProfessions().get(looper).getRating());
+            }
+
+            neighborhood.add(new Neighbor(
+                            users.get(i),
+                            pearsonsCorrelation.correlation(
+                                    ArrayUtils.toPrimitive(similarArray.toArray(new Double[similarArray.size()]))
+                                    , ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))))
+            );
+        }
+
+        return neighborhood;
+    }
+
+    /* @getDemographicNeighborhood
+returns an neighborhood of users based on demographics (Age, gender and birthday)
+    */
+    public static ArrayList<Neighbor> getDemographicNeighborhood(User baseUser, List<User> users) {
+        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
+
+        /* Neighborhood Users*/
+        ArrayList<Neighbor> neighborhood = new ArrayList<Neighbor>();
+
+        /* Demographic Neighbors */
+        ArrayList<DemographicNeighbor> udemNeighborhood = new ArrayList<DemographicNeighbor>();
+
+        /* Criando correlação do baseUser - Basicamente uma matrix demografica */
+        DemographicNeighbor udemBaseUser = getDemographicUser(baseUser);
+
+
+        /* search and remove requested id */
+        Iterator<User> iterator;
+        for (iterator = users.iterator(); iterator.hasNext(); ) {
+            User user = iterator.next();
+            if (user.getId().equals(baseUser.getId())) {
+                iterator.remove();
+            }
+        }
+
+        for (int i = 0; i <= (users.size() - 1); i++) {
+
+            ArrayList<Double> similarArray = getDemographicUser(users.get(i)).toDoubleArray();
+
+            neighborhood.add(new Neighbor(
+                            users.get(i),
+                            pearsonsCorrelation.correlation(
+                                    ArrayUtils.toPrimitive(similarArray.toArray(new Double[similarArray.size()]))
+                                    , ArrayUtils.toPrimitive(udemBaseUser.toDoubleArray().toArray(
+                                            new Double[udemBaseUser.toDoubleArray().size()]))))
+            );
+
+        }
+
+        return neighborhood;
+    }
+
+    /* Merge Demographic and Normal Correlation and retrieve an List of Users */
+    public static ArrayList<Neighbor> getMergedCorrelations(ArrayList<Neighbor> normalSimilarity, ArrayList<Neighbor> demographicSimilarity) {
+
+        int length = normalSimilarity.size() == demographicSimilarity.size() ? normalSimilarity.size() : 0;
+        ArrayList<Neighbor> neighboors = new ArrayList<>();
+
+        if (length != 0) {
+            for (int i = 0; i <= (length - 1); i++) {
+                if (normalSimilarity.get(i).getUser().getId().equals(demographicSimilarity.get(i).getUser().getId())) {
+
+                    neighboors.add(new Neighbor(normalSimilarity.get(i).getUser(),
+                            (normalSimilarity.get(i).getCorrelation() +
+                                    (normalSimilarity.get(i).getCorrelation()
+                                            * demographicSimilarity.get(i).getCorrelation()))));
+                }
+            }
+            return neighboors;
+
+        } else return null;
+    }
+
+    /* {18, 18-29, 29-49, 49, male, female} */
+    private static DemographicNeighbor getDemographicUser(User user) {
+
+        String birthday = user.getBirthday();
+        String gender = user.getGender();
+
+        if (ClusterUtils.getDemographicClusterAge(birthday)
+                .equals(ClusterUtils.CLUSTER_EIGHTEEN)) {
+
+            if (gender.equals("male")) {
+                return new DemographicNeighbor(user, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+            } else {
+                return new DemographicNeighbor(user, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
+            }
+
+        } else if (ClusterUtils.getDemographicClusterAge(birthday)
+                .equals(ClusterUtils.CLUSTER_OVER_EIGHTEEN_UNDER_TWENTYNINE)) {
+
+            if (gender.equals("male")) {
+                return new DemographicNeighbor(user, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0);
+            } else {
+                return new DemographicNeighbor(user, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
+            }
+
+        } else if (ClusterUtils.getDemographicClusterAge(birthday)
+                .equals(ClusterUtils.CLUSTER_OVER_TWENTYNINE_UNDER_FORTYNINE)) {
+
+            if (gender.equals("male")) {
+                return new DemographicNeighbor(user, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0);
+            } else {
+                return new DemographicNeighbor(user, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0);
+            }
+
+        } else {
+
+            if (gender.equals("male")) {
+                return new DemographicNeighbor(user, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0);
+            } else {
+                return new DemographicNeighbor(user, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0);
+            }
+        }
+    }
 }

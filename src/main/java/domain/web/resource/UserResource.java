@@ -1,13 +1,14 @@
 package domain.web.resource;
 
 import com.google.gson.Gson;
-import domain.model.*;
+import domain.model.Neighbor;
+import domain.model.Occupation;
+import domain.model.Profession;
+import domain.model.User;
 import domain.repository.UserRepository;
 import domain.service.DisconnectUserService;
 import domain.utils.ClusterUtils;
 import domain.utils.myCareerUtils;
-import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.math3.stat.correlation.PearsonsCorrelation;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,7 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -97,20 +97,21 @@ public class UserResource {
             List<User> users = userRepository.findAll();
 
             /* Knowledge Correlation */
-            ArrayList<Neighbor> tasteSimilarity = getKnowledgeNeighborhood(baseUser, users);
+            ArrayList<Neighbor> knowledgeSimilarity = ClusterUtils.getKnowledgeNeighborhood(baseUser, users);
 
             /* Demographic Correlation */
-            ArrayList<Neighbor> normalSimilarity = getCollaborativeNeighborhood(baseUser, users);
-            ArrayList<Neighbor> demographicSimillarity = getDemographicNeighborhood(baseUser, users);
+            ArrayList<Neighbor> normalSimilarity = ClusterUtils.getCollaborativeNeighborhood(baseUser, users);
+            ArrayList<Neighbor> demographicSimillarity = ClusterUtils.getDemographicNeighborhood(baseUser, users);
 
 
-            ArrayList<Neighbor> neighborhood = getMergedCorrelations(normalSimilarity, demographicSimillarity);
+            ArrayList<Neighbor> neighborhood = ClusterUtils.getMergedCorrelations(normalSimilarity, demographicSimillarity);
 
-            /* Order arrayList by similar users from highest to lowest correlation */
-            Collections.sort(neighborhood);
+            /* Order arrayList by similar users from   highest to lowest correlation */
+            //Collections.sort(neighborhood);
+            Collections.sort(knowledgeSimilarity);
 
             String result = "";
-            for (Neighbor n : neighborhood) {
+            for (Neighbor n : knowledgeSimilarity) {
                 result = result + " /" + n.getUser().getId() + ":" + n.getCorrelation() + "\n";
             }
 
@@ -119,199 +120,5 @@ public class UserResource {
             return new ResponseEntity<>("id not found", HttpStatus.BAD_REQUEST);
         }
 
-    }
-
-    /* @getKnowledgeNeighborhood
-       returns an neighborhood of users based on tastes (movies, books, athletes and musics)
-    */
-    private ArrayList<Neighbor> getKnowledgeNeighborhood(User baseUser, List<User> users) {
-
-        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
-
-        /* Neighborhood Users*/
-        ArrayList<Neighbor> neighborhood = new ArrayList<Neighbor>();
-
-        /* baseUser double array */
-        ArrayList<Double> baseArray = new ArrayList<Double>();
-        for (int looper = 0; looper <= (baseUser.getProfessions().size() - 1); looper++) {
-            baseArray.add(baseUser.getProfessions().get(looper).getRating());
-        }
-
-        /* search and remove requested id */
-        Iterator<User> iterator;
-        for (iterator = users.iterator(); iterator.hasNext(); ) {
-            User user = iterator.next();
-            if (user.getId().equals(baseUser.getId())) {
-                iterator.remove();
-            }
-        }
-
-        /* Creating correlations Matrix */
-        for (int i = 0; i <= (users.size() - 1); i++) {
-
-            ArrayList<Double> similarArray = new ArrayList<Double>();
-            for (int looper = 0; looper <= (users.get(i).getProfessions().size() - 1); looper++) {
-                similarArray.add(users.get(i).getProfessions().get(looper).getRating());
-            }
-
-            neighborhood.add(new Neighbor(
-                            users.get(i),
-                            pearsonsCorrelation.correlation(
-                                    ArrayUtils.toPrimitive(similarArray.toArray(new Double[similarArray.size()]))
-                                    , ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))))
-            );
-        }
-
-        return neighborhood;
-    }
-
-    /* @getCollaborativeNeighborhood
-    returns an neighborhood of users based on ratings
-     */
-    private ArrayList<Neighbor> getCollaborativeNeighborhood(User baseUser, List<User> users) {
-
-        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
-
-        /* Neighborhood Users*/
-        ArrayList<Neighbor> neighborhood = new ArrayList<Neighbor>();
-
-        /* baseUser double array */
-        ArrayList<Double> baseArray = new ArrayList<Double>();
-        for (int looper = 0; looper <= (baseUser.getProfessions().size() - 1); looper++) {
-            baseArray.add(baseUser.getProfessions().get(looper).getRating());
-        }
-
-        /* search and remove requested id */
-        Iterator<User> iterator;
-        for (iterator = users.iterator(); iterator.hasNext(); ) {
-            User user = iterator.next();
-            if (user.getId().equals(baseUser.getId())) {
-                iterator.remove();
-            }
-        }
-
-        /* Creating correlations Matrix */
-        for (int i = 0; i <= (users.size() - 1); i++) {
-
-            ArrayList<Double> similarArray = new ArrayList<Double>();
-            for (int looper = 0; looper <= (users.get(i).getProfessions().size() - 1); looper++) {
-                similarArray.add(users.get(i).getProfessions().get(looper).getRating());
-            }
-
-            neighborhood.add(new Neighbor(
-                            users.get(i),
-                            pearsonsCorrelation.correlation(
-                                    ArrayUtils.toPrimitive(similarArray.toArray(new Double[similarArray.size()]))
-                                    , ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))))
-            );
-        }
-
-        return neighborhood;
-    }
-
-    /* @getDemographicNeighborhood
-returns an neighborhood of users based on demographics (Age, gender and birthday)
-    */
-    private ArrayList<Neighbor> getDemographicNeighborhood(User baseUser, List<User> users) {
-        PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
-
-        /* Neighborhood Users*/
-        ArrayList<Neighbor> neighborhood = new ArrayList<Neighbor>();
-
-        /* Demographic Neighbors */
-        ArrayList<DemographicNeighbor> udemNeighborhood = new ArrayList<DemographicNeighbor>();
-
-        /* Criando correlação do baseUser - Basicamente uma matrix demografica */
-        DemographicNeighbor udemBaseUser = getDemographicUser(baseUser);
-
-
-        /* search and remove requested id */
-        Iterator<User> iterator;
-        for (iterator = users.iterator(); iterator.hasNext(); ) {
-            User user = iterator.next();
-            if (user.getId().equals(baseUser.getId())) {
-                iterator.remove();
-            }
-        }
-
-        for (int i = 0; i <= (users.size() - 1); i++) {
-
-            ArrayList<Double> similarArray = getDemographicUser(users.get(i)).toDoubleArray();
-
-            neighborhood.add(new Neighbor(
-                            users.get(i),
-                            pearsonsCorrelation.correlation(
-                                    ArrayUtils.toPrimitive(similarArray.toArray(new Double[similarArray.size()]))
-                                    , ArrayUtils.toPrimitive(udemBaseUser.toDoubleArray().toArray(
-                                            new Double[udemBaseUser.toDoubleArray().size()]))))
-            );
-
-        }
-
-        return neighborhood;
-    }
-
-    /* Merge Demographic and Normal Correlation and retrieve an List of Users */
-    private ArrayList<Neighbor> getMergedCorrelations(ArrayList<Neighbor> normalSimilarity, ArrayList<Neighbor> demographicSimilarity) {
-
-        int length = normalSimilarity.size() == demographicSimilarity.size() ? normalSimilarity.size() : 0;
-        ArrayList<Neighbor> neighboors = new ArrayList<>();
-
-        if (length != 0) {
-            for (int i = 0; i <= (length - 1); i++) {
-                if (normalSimilarity.get(i).getUser().getId().equals(demographicSimilarity.get(i).getUser().getId())) {
-
-                    neighboors.add(new Neighbor(normalSimilarity.get(i).getUser(),
-                            (normalSimilarity.get(i).getCorrelation() +
-                                    (normalSimilarity.get(i).getCorrelation()
-                                            * demographicSimilarity.get(i).getCorrelation()))));
-                }
-            }
-            return neighboors;
-
-        } else return null;
-    }
-
-    /* {18, 1829, 2949, 49, male, female} */
-    private DemographicNeighbor getDemographicUser(User user) {
-
-        String birthday = user.getBirthday();
-        String gender = user.getGender();
-
-        if (ClusterUtils.getDemographicClusterAge(birthday)
-                .equals(ClusterUtils.CLUSTER_EIGHTEEN)) {
-
-            if (gender.equals("male")) {
-                return new DemographicNeighbor(user, 1.0, 0.0, 0.0, 0.0, 1.0, 0.0);
-            } else {
-                return new DemographicNeighbor(user, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0);
-            }
-
-        } else if (ClusterUtils.getDemographicClusterAge(birthday)
-                .equals(ClusterUtils.CLUSTER_OVER_EIGHTEEN_UNDER_TWENTYNINE)) {
-
-            if (gender.equals("male")) {
-                return new DemographicNeighbor(user, 0.0, 1.0, 0.0, 0.0, 1.0, 0.0);
-            } else {
-                return new DemographicNeighbor(user, 0.0, 1.0, 0.0, 0.0, 0.0, 1.0);
-            }
-
-        } else if (ClusterUtils.getDemographicClusterAge(birthday)
-                .equals(ClusterUtils.CLUSTER_OVER_TWENTYNINE_UNDER_FORTYNINE)) {
-
-            if (gender.equals("male")) {
-                return new DemographicNeighbor(user, 0.0, 0.0, 1.0, 0.0, 1.0, 0.0);
-            } else {
-                return new DemographicNeighbor(user, 0.0, 0.0, 1.0, 0.0, 0.0, 1.0);
-            }
-
-        } else {
-
-            if (gender.equals("male")) {
-                return new DemographicNeighbor(user, 0.0, 0.0, 0.0, 1.0, 1.0, 0.0);
-            } else {
-                return new DemographicNeighbor(user, 0.0, 0.0, 0.0, 1.0, 0.0, 1.0);
-            }
-        }
     }
 }
