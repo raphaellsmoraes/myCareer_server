@@ -363,7 +363,6 @@ public class ClusterUtils {
             compareMusics.add(e.getId());
         }
 
-
         /* Creating matrix */
         ArrayList<Double> baseArray = new ArrayList<Double>();
         ArrayList<Double> compareArray = new ArrayList<Double>();
@@ -398,6 +397,11 @@ public class ClusterUtils {
         }
 
         if ((baseArray.size() >= 2 && (compareArray.size() >= 2))) {
+
+            LOGGER.info(String.format("music b0: %s", ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[0]));
+            LOGGER.info(String.format("music b1: %s", ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[1]));
+            LOGGER.info(String.format("music c0: %s", ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[0]));
+            LOGGER.info(String.format("music c1: %s", ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[1]));
 
             return pearsonsCorrelation.correlation(
                     ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
@@ -570,19 +574,23 @@ returns an neighborhood of users based on demographics (Age, gender and birthday
     }
 
     /* Merge Demographic and Normal Correlation and retrieve an List of Users */
-    public static ArrayList<Neighbor> getMergedCorrelations(ArrayList<Neighbor> normalSimilarity, ArrayList<Neighbor> demographicSimilarity) {
+    public static ArrayList<Neighbor> getMergedCorrelations(User baseUser, List<User> filteredUsers) {
 
-        int length = normalSimilarity.size() == demographicSimilarity.size() ? normalSimilarity.size() : 0;
+        /* Demographic Correlation */
+        ArrayList<Neighbor> normalSimilarity = ClusterUtils.getCollaborativeNeighborhood(baseUser, filteredUsers);
+        ArrayList<Neighbor> demographicSimillarity = ClusterUtils.getDemographicNeighborhood(baseUser, filteredUsers);
+
+        int length = normalSimilarity.size() == demographicSimillarity.size() ? normalSimilarity.size() : 0;
         ArrayList<Neighbor> neighboors = new ArrayList<>();
 
         if (length != 0) {
             for (int i = 0; i <= (length - 1); i++) {
-                if (normalSimilarity.get(i).getUser().getId().equals(demographicSimilarity.get(i).getUser().getId())) {
+                if (normalSimilarity.get(i).getUser().getId().equals(demographicSimillarity.get(i).getUser().getId())) {
 
                     neighboors.add(new Neighbor(normalSimilarity.get(i).getUser(),
                             (normalSimilarity.get(i).getCorrelation() +
                                     (normalSimilarity.get(i).getCorrelation()
-                                            * demographicSimilarity.get(i).getCorrelation()))));
+                                            * demographicSimillarity.get(i).getCorrelation()))));
                 }
             }
             return neighboors;
