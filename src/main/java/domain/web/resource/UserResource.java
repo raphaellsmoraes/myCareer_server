@@ -1,13 +1,11 @@
 package domain.web.resource;
 
 import com.google.gson.Gson;
-import domain.model.Neighbor;
-import domain.model.Occupation;
-import domain.model.Profession;
-import domain.model.User;
+import domain.model.*;
 import domain.repository.UserRepository;
 import domain.service.DisconnectUserService;
 import domain.utils.ClusterUtils;
+import domain.utils.PredictionUtils;
 import domain.utils.myCareerUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,12 +104,14 @@ public class UserResource {
 
             ArrayList<Neighbor> neighborhood = ClusterUtils.getMergedCorrelations(baseUser, filteredUsers);
 
-            /* Order arrayList by similar users from   highest to lowest correlation */
+            /* Order arrayList by similar users from highest to lowest correlation */
             Collections.sort(neighborhood);
 
+            ArrayList<Prediction> predictions = PredictionUtils.getPredictions(baseUser, neighborhood);
+
             String result = "";
-            for (Neighbor n : neighborhood) {
-                result = result + " /" + n.getUser().getId() + ":" + n.getCorrelation() + "\n";
+            for (Prediction n : predictions) {
+                result = result + " /" + n.getId() + ":" + n.getPrediction() + "\n";
             }
 
             return new ResponseEntity<>(result, HttpStatus.OK);
