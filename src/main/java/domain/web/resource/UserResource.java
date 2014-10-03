@@ -2,6 +2,7 @@ package domain.web.resource;
 
 import com.google.gson.Gson;
 import domain.model.*;
+import domain.repository.OccupationRepository;
 import domain.repository.UserRepository;
 import domain.service.DisconnectUserService;
 import domain.utils.ClusterUtils;
@@ -34,6 +35,9 @@ public class UserResource {
     private UserRepository userRepository;
 
     @Autowired
+    private OccupationRepository occupationRepository;
+
+    @Autowired
     private DisconnectUserService disconnectUserService;
 
     @RequestMapping(value = "/connect", method = RequestMethod.POST, consumes = "application/json")
@@ -63,6 +67,11 @@ public class UserResource {
         userRepository.save(updatedUser);
 
         return new ResponseEntity<>(userRepository.findOne(id).toString(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/getOccupation", method = RequestMethod.GET)
+    public ResponseEntity<String> getOccupation(@RequestParam("id") String id) {
+        return new ResponseEntity<>(occupationRepository.findOne(id).getTitle(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/disconnect", method = RequestMethod.GET)
@@ -108,6 +117,7 @@ public class UserResource {
             Collections.sort(neighborhood);
 
             ArrayList<Prediction> predictions = PredictionUtils.getPredictions(baseUser, neighborhood);
+            Collections.sort(predictions);
 
             String result = "";
             for (Prediction n : predictions) {

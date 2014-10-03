@@ -159,19 +159,19 @@ public class ClusterUtils {
 
         /* get books correlation btw users */
         double booksCorrelation = getBooksCorrelation(base, compare);
-        LOGGER.info(String.format("booksCorrelation: %s", booksCorrelation));
+        //LOGGER.info(String.format("booksCorrelation: %s", booksCorrelation));
 
         /* get movies correlation btw users */
         double moviesCorrelation = getMoviesCorrelation(base, compare);
-        LOGGER.info(String.format("moviesCorrelation: %s", moviesCorrelation));
+        //LOGGER.info(String.format("moviesCorrelation: %s", moviesCorrelation));
 
         /* get atlhetes correlation btw users */
         double athletesCorrelation = getAtlhetesCorrelation(base, compare);
-        LOGGER.info(String.format("athletesCorrelation: %s", athletesCorrelation));
+        //LOGGER.info(String.format("athletesCorrelation: %s", athletesCorrelation));
 
         /* get music correlation btw users */
         double musicCorrelation = getMusicCorrelation(base, compare);
-        LOGGER.info(String.format("musicCorrelation: %s", musicCorrelation));
+        //LOGGER.info(String.format("musicCorrelation: %s", musicCorrelation));
 
         /* get personality correlation btw users */
         //double personalityCorrelation = getBooksCorrelation(base, compare);
@@ -183,7 +183,7 @@ public class ClusterUtils {
     }
 
     private static double getBooksCorrelation(User base, User compare) {
-        LOGGER.info(String.format("Starting getBooksCorrelation....%s", Thread.currentThread().getName()));
+        //LOGGER.info(String.format("Starting getBooksCorrelation....%s", Thread.currentThread().getName()));
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         Neighbor result = null;
 
@@ -222,7 +222,7 @@ public class ClusterUtils {
             string = string + "/" + b;
         }
 
-        LOGGER.info(String.format("Books: %s", string));
+        //LOGGER.info(String.format("Books: %s", string));
 
         for (int i = 0; i <= (booksArray.length - 1); i++) {
 
@@ -260,7 +260,7 @@ public class ClusterUtils {
     }
 
     private static double getMoviesCorrelation(User base, User compare) {
-        LOGGER.info(String.format("Starting getMoviesCorrelation....%s", Thread.currentThread().getName()));
+        //LOGGER.info(String.format("Starting getMoviesCorrelation....%s", Thread.currentThread().getName()));
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         Neighbor result = null;
 
@@ -299,7 +299,7 @@ public class ClusterUtils {
             string = string + "/" + b;
         }
 
-        LOGGER.info(String.format("Movies: %s", string));
+        // LOGGER.info(String.format("Movies: %s", string));
 
         for (int i = 0; i <= (moviesArray.length - 1); i++) {
 
@@ -336,7 +336,7 @@ public class ClusterUtils {
     }
 
     private static double getMusicCorrelation(User base, User compare) {
-        LOGGER.info(String.format("Starting getMusicCorrelation....%s", Thread.currentThread().getName()));
+        //LOGGER.info(String.format("Starting getMusicCorrelation....%s", Thread.currentThread().getName()));
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         Neighbor result = null;
 
@@ -374,7 +374,7 @@ public class ClusterUtils {
             string = string + "/" + b;
         }
 
-        LOGGER.info(String.format("Music: %s", string));
+        //LOGGER.info(String.format("Music: %s", string));
 
         for (int i = 0; i <= (musicsArray.length - 1); i++) {
 
@@ -398,10 +398,10 @@ public class ClusterUtils {
 
         if ((baseArray.size() >= 2 && (compareArray.size() >= 2))) {
 
-            LOGGER.info(String.format("music b0: %s", ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[0]));
-            LOGGER.info(String.format("music b1: %s", ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[1]));
-            LOGGER.info(String.format("music c0: %s", ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[0]));
-            LOGGER.info(String.format("music c1: %s", ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[1]));
+            // LOGGER.info(String.format("music b0: %s", ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[0]));
+            //  LOGGER.info(String.format("music b1: %s", ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))[1]));
+            //  LOGGER.info(String.format("music c0: %s", ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[0]));
+            //  LOGGER.info(String.format("music c1: %s", ArrayUtils.toPrimitive(compareArray.toArray(new Double[compareArray.size()]))[1]));
 
             return pearsonsCorrelation.correlation(
                     ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))
@@ -412,7 +412,7 @@ public class ClusterUtils {
 
     private static double getAtlhetesCorrelation(User base, User compare) {
 
-        LOGGER.info(String.format("Starting getAtlhetesCorrelation....%s", Thread.currentThread().getName()));
+        // LOGGER.info(String.format("Starting getAtlhetesCorrelation....%s", Thread.currentThread().getName()));
         PearsonsCorrelation pearsonsCorrelation = new PearsonsCorrelation();
         Neighbor result = null;
 
@@ -451,7 +451,7 @@ public class ClusterUtils {
             string = string + "/" + b;
         }
 
-        LOGGER.info(String.format("Atlhetes: %s", string));
+        // LOGGER.info(String.format("Atlhetes: %s", string));
 
         for (int i = 0; i <= (atlhetesArray.length - 1); i++) {
 

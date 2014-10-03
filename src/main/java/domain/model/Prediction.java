@@ -3,7 +3,7 @@ package domain.model;
 /**
  * Created by rapha_000 on 01/10/2014.
  */
-public class Prediction {
+public class Prediction implements Comparable<Prediction> {
 
     /* Occupation ID */
     String id;
@@ -33,5 +33,10 @@ public class Prediction {
 
     public void setPrediction(double prediction) {
         this.prediction = prediction;
+    }
+
+    @Override
+    public int compareTo(Prediction o) {
+        return new Double(prediction).compareTo(o.prediction);
     }
 }

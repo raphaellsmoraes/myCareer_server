@@ -3,6 +3,7 @@ package domain.utils;
 import domain.model.*;
 import org.apache.log4j.Logger;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 /**
@@ -38,24 +39,41 @@ public class PredictionUtils {
                             /* rating Sum */
                             ratingSum = ratingSum +
                                     (
-                                            n.getUser().getProfessions().get(i).getRating() - getAverageRating(n.getUser())
-                                                    *
-                                                    n.getCorrelation()
+                                            (n.getUser().getProfessions().get(i).getRating() - getAverageRating(n.getUser()))
+                                                    * n.getCorrelation()
                                     );
-
-                            /* Correlation Sum */
-                            correlationSum = correlationSum + n.getCorrelation();
                         }
                     }
                 }
+
+                /* Correlation Sum */
+                correlationSum = correlationSum + n.getCorrelation();
             }
 
             Double prediction = 0.0;
-            prediction = baseAverage = (ratingSum / correlationSum);
+            prediction = getRoundedRating(baseAverage + (ratingSum / correlationSum));
             arrayPredictions.add(new Prediction(o.getId(), prediction));
         }
 
         return arrayPredictions;
+    }
+
+    private static Double getRoundedRating(Double value) {
+        if (value > 5.0) {
+            return 5.0;
+        } else if (value < 1) {
+            return 0.0;
+        } else {
+            return new Double(round(value.doubleValue(), 0));
+        }
+    }
+
+    public static double round(double d, int decimalPlace) {
+        // see the Javadoc about why we use a String in the constructor
+        // http://java.sun.com/j2se/1.5.0/docs/api/java/math/BigDecimal.html#BigDecimal(double)
+        BigDecimal bd = new BigDecimal(Double.toString(d));
+        bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
+        return bd.doubleValue();
     }
 
     /*
