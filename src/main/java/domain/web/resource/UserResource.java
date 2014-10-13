@@ -60,6 +60,7 @@ public class UserResource {
     public ResponseEntity updateOccupations(@RequestParam String id, @RequestBody String data) {
 
         Gson gson = new Gson();
+        /* teste */
         Occupation[] occupation = gson.fromJson(data.toString(), Occupation[].class);
         ArrayList<Profession> profession = new ArrayList<Profession>();
 
