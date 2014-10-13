@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import domain.model.*;
 import domain.repository.OccupationRepository;
 import domain.repository.UserRepository;
-import domain.service.DisconnectUserService;
 import domain.utils.ClusterUtils;
 import domain.utils.PredictionUtils;
 import domain.utils.myCareerUtils;
@@ -37,14 +36,20 @@ public class UserResource {
     @Autowired
     private OccupationRepository occupationRepository;
 
-    @Autowired
-    private DisconnectUserService disconnectUserService;
-
     @RequestMapping(value = "/connect", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity newUser(@RequestBody String data) {
 
         Gson gson = new Gson();
         User user = gson.fromJson(data, User.class);
+
+        ArrayList<Occupation> occupations = new ArrayList<Occupation>();
+        ArrayList<Profession> profession = new ArrayList<Profession>();
+
+        for (Occupation occupation : occupationRepository.findAll()) {
+            profession.add(new Profession(occupation, -1.0 /* myCareerUtils.randInt(-1, 5)*/));
+        }
+
+        user.setProfessions(profession);
 
         userRepository.save(User.newUser(user));
 
@@ -69,15 +74,24 @@ public class UserResource {
         return new ResponseEntity<>(userRepository.findOne(id).toString(), HttpStatus.OK);
     }
 
+    /* initiate user*/
+    @RequestMapping(value = "/updateOcuppation", method = RequestMethod.GET)
+    public ResponseEntity updateOccupation(@RequestParam String id, @RequestParam String occupationId) {
+
+        User updatedUser = userRepository.findOne(id);
+
+        /* search for occupation and updates it */
+        userRepository.save(updatedUser);
+
+        return new ResponseEntity<>(userRepository.findOne(id).toString(), HttpStatus.OK);
+    }
+
+    /* Iterate through all ocupations setting -1 */
+
+
     @RequestMapping(value = "/getOccupation", method = RequestMethod.GET)
     public ResponseEntity<String> getOccupation(@RequestParam("id") String id) {
         return new ResponseEntity<>(occupationRepository.findOne(id).getTitle(), HttpStatus.OK);
-    }
-
-    @RequestMapping(value = "/disconnect", method = RequestMethod.GET)
-    public ResponseEntity<String> receiveDisconnectRequest(@RequestParam("username") String username) {
-        disconnectUserService.disconnect(username);
-        return new ResponseEntity<>(String.format("User %s disconnected", username), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
