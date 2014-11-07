@@ -28,13 +28,15 @@ public class PredictionUtils {
 
             for (Neighbor n : neighborhood) {
 
-                /* SUM (Rit(Rating neighbour-item) - Ai(Average user rating)) * sim(u,i)(Pearson correlation btw base and neighbour) */
+                /* SUM (Rit(Rating neighbour-item) - Ai(Average user rating))
+                 *  X sim(u,i)(Pearson correlation btw base and neighbour) */
                 /* SUM sim(u,i)(Pearson correlation btw base and neighbour) */
 
                 for (int i = 0; i <= (n.getUser().getProfessions().size() - 1); i++) {
+
                     /* Search for profession and check if it was rated */
                     if (n.getUser().getProfessions().get(i).getOccupation().getId().equals(o.getId())) {
-                        if (n.getUser().getProfessions().get(i).getRating() != -1) {
+                        if (n.getUser().getProfessions().get(i).getRating() >= 0) {
 
                             /* rating Sum */
                             ratingSum = ratingSum +
@@ -52,7 +54,7 @@ public class PredictionUtils {
 
             Double prediction = 0.0;
             prediction = getRoundedRating(baseAverage + (ratingSum / correlationSum));
-            arrayPredictions.add(new Prediction(o.getId(), prediction));
+            arrayPredictions.add(new Prediction(o.getId(), o, prediction));
         }
 
         return arrayPredictions;
