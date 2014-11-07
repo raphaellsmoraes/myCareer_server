@@ -19,12 +19,27 @@ public class PredictionUtils {
         ArrayList<Prediction> arrayPredictions = new ArrayList<>();
 
         /* Non-rated occupations */
-        ArrayList<Occupation> baseNonRated = getNonRatedOccupations(baseUser);
+        ArrayList<Profession> baseRated = getRatedProfessions(baseUser);
 
-        for (Occupation o : baseNonRated) {
+        /* Check occupations that were already evaluated */
+        ArrayList<Profession> allNeighborRated = new ArrayList<Profession>();
+        for (Neighbor n : neighborhood) {
+
+            /* Check if profession exists in our list or base user list */
+            for (Profession p : n.getUser().getProfessions()) {
+                if (p.getRating() != -1) {
+                    if (!allNeighborRated.contains(p) && !baseRated.contains(p)) {
+                        allNeighborRated.add(p);
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < (allNeighborRated.size()); i++) {
 
             Double ratingSum = 0.0;
             Double correlationSum = 0.0;
+            Boolean occupationFound = false;
 
             for (Neighbor n : neighborhood) {
 
@@ -32,29 +47,38 @@ public class PredictionUtils {
                  *  X sim(u,i)(Pearson correlation btw base and neighbour) */
                 /* SUM sim(u,i)(Pearson correlation btw base and neighbour) */
 
-                for (int i = 0; i <= (n.getUser().getProfessions().size() - 1); i++) {
+                /* Get all rated professions */
+                ArrayList<Profession> neighborRated = getRatedProfessions(n.getUser());
 
-                    /* Search for profession and check if it was rated */
-                    if (n.getUser().getProfessions().get(i).getOccupation().getId().equals(o.getId())) {
-                        if (n.getUser().getProfessions().get(i).getRating() >= 0) {
+                /* Loop through them */
+                for (int j = 0; j <= (neighborRated.size() - 1); j++) {
+
+                    /* Check if same profession */
+                    if (neighborRated.get(j).getOccupation().getId().equals(
+                            allNeighborRated.get(i).getOccupation().getId()
+                    )) {
 
                             /* rating Sum */
-                            ratingSum = ratingSum +
-                                    (
-                                            (n.getUser().getProfessions().get(i).getRating() - getAverageRating(n.getUser()))
-                                                    * n.getCorrelation()
-                                    );
-                        }
+                        ratingSum = ratingSum +
+                                (
+                                        (neighborRated.get(j).getRating() - getAverageRating(n.getUser()))
+                                                * n.getCorrelation()
+                                );
+                        break;
                     }
                 }
 
                 /* Correlation Sum */
                 correlationSum = correlationSum + n.getCorrelation();
+                occupationFound = true;
             }
 
-            Double prediction = 0.0;
-            prediction = getRoundedRating(baseAverage + (ratingSum / correlationSum));
-            arrayPredictions.add(new Prediction(o.getId(), o, prediction));
+            if (occupationFound) {
+                Double prediction = 0.0;
+                prediction = getRoundedRating(baseAverage + (ratingSum / correlationSum));
+                arrayPredictions.add(new Prediction(allNeighborRated.get(i).getOccupation().getId(),
+                        allNeighborRated.get(i).getOccupation(), prediction));
+            }
         }
 
         return arrayPredictions;
@@ -65,8 +89,6 @@ public class PredictionUtils {
             return 5.0;
         } else if (value < 0.5) {
             return 0.0;
-        } else if (value >= 0.5) {
-            return 1.0;
         } else {
             return new Double(round(value.doubleValue(), 0));
         }
@@ -108,5 +130,17 @@ public class PredictionUtils {
         }
 
         return occupations;
+    }
+
+    private static ArrayList<Profession> getRatedProfessions(User user) {
+        ArrayList<Profession> professions = new ArrayList<>();
+
+        for (Profession n : user.getProfessions()) {
+            if (n.getRating() != -1) {
+                professions.add(n);
+            }
+        }
+
+        return professions;
     }
 }
