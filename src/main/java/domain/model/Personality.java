@@ -19,14 +19,16 @@ public class Personality implements Serializable {
     private Integer artistic;
     private Integer social;
     private Integer enterprising;
+    private Integer conventional;
 
-    public Personality(String id, Integer realistic, Integer investigative, Integer artistic, Integer social, Integer enterprising) {
+    public Personality(String id, Integer realistic, Integer investigative, Integer artistic, Integer social, Integer enterprising, Integer conventional) {
         this.id = id;
         this.realistic = realistic;
         this.investigative = investigative;
         this.artistic = artistic;
         this.social = social;
         this.enterprising = enterprising;
+        this.conventional = conventional;
     }
 
     public Personality() {
@@ -78,5 +80,13 @@ public class Personality implements Serializable {
 
     public void setEnterprising(Integer enterprising) {
         this.enterprising = enterprising;
+    }
+
+    public Integer getConventional() {
+        return conventional;
+    }
+
+    public void setConventional(Integer conventional) {
+        this.conventional = conventional;
     }
 }

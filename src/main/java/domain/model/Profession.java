@@ -17,6 +17,7 @@ public class Profession implements Serializable {
     private double rating;
 
     public Profession(Occupation occupation, double rating) {
+        //this.id = UUID.randomUUID().toString();
         this.occupation = occupation;
         this.rating = rating;
     }

@@ -52,6 +52,7 @@ public class User implements Serializable {
                 ArrayList<FavoriteAthletes> favorite_athletes, Location location, String gender,
                 Personality personality, String groupId) {
 
+        //this.id = UUID.randomUUID().toString();
         this.name = name;
         this.facebookId = facebookId;
         this.birthday = birthday;

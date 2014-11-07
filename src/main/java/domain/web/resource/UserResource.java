@@ -11,11 +11,7 @@ import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +20,7 @@ import java.util.List;
 /**
  * @author Raphael Moraes (raphael.lsmoraes@gmail.com)
  */
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserResource {
 
@@ -38,22 +34,22 @@ public class UserResource {
 
     @RequestMapping(value = "/connect", method = RequestMethod.POST, consumes = "application/json")
     public ResponseEntity newUser(@RequestBody String data) {
-
         Gson gson = new Gson();
         User user = gson.fromJson(data, User.class);
 
-        ArrayList<Occupation> occupations = new ArrayList<Occupation>();
+        LOGGER.info(user.toString());
+
+        User newUser = userRepository.save(User.newUser(user));
+
         ArrayList<Profession> profession = new ArrayList<Profession>();
 
         for (Occupation occupation : occupationRepository.findAll()) {
             profession.add(new Profession(occupation, -1.0 /* myCareerUtils.randInt(-1, 5)*/));
         }
 
-        user.setProfessions(profession);
+        newUser.setProfessions(profession);
 
-        userRepository.save(User.newUser(user));
-
-        return new ResponseEntity<>(user.toString(), HttpStatus.OK);
+        return new ResponseEntity<>(userRepository.save(newUser), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/ocuppations", method = RequestMethod.POST, consumes = "application/json")
@@ -87,8 +83,32 @@ public class UserResource {
         return new ResponseEntity<>(userRepository.findOne(id).toString(), HttpStatus.OK);
     }
 
-    /* Iterate through all ocupations setting -1 */
+    /* update Rating*/
+    @RequestMapping(value = "/updateRating", method = RequestMethod.GET)
+    public ResponseEntity updateRating(@RequestParam String id, @RequestParam String occupationId, @RequestParam double rating) {
 
+        User updatedUser = userRepository.findOne(id);
+        for (int i = 0; i <= updatedUser.getProfessions().size(); i++) {
+            if (updatedUser.getProfessions().get(i).getOccupation().getOnet_soc().equals(occupationId)) {
+                updatedUser.getProfessions().get(i).setRating(rating);
+                break;
+            }
+        }
+
+        return new ResponseEntity<>(userRepository.save(updatedUser), HttpStatus.OK);
+    }
+
+    /* update Personality*/
+    @RequestMapping(value = "/updatePersonality", method = RequestMethod.POST, consumes = "application/json")
+    public ResponseEntity updatePersonality(@RequestParam String id, @RequestBody String data) {
+        User updatedUser = userRepository.findOne(id);
+
+        Gson gson = new Gson();
+        Personality personality = gson.fromJson(data, Personality.class);
+        updatedUser.setPersonality(personality);
+
+        return new ResponseEntity<>(userRepository.save(updatedUser), HttpStatus.OK);
+    }
 
     @RequestMapping(value = "/getOccupation", method = RequestMethod.GET)
     public ResponseEntity<String> getOccupation(@RequestParam("id") String id) {
