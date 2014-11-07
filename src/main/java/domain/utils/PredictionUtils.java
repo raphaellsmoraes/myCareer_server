@@ -61,8 +61,10 @@ public class PredictionUtils {
     private static Double getRoundedRating(Double value) {
         if (value > 5.0) {
             return 5.0;
-        } else if (value < 1) {
+        } else if (value < 0.5) {
             return 0.0;
+        } else if (value >= 0.5) {
+            return 1.0;
         } else {
             return new Double(round(value.doubleValue(), 0));
         }

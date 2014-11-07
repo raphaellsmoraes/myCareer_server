@@ -14,4 +14,6 @@ public interface UserRepository extends MongoRepository<User, String> {
 
     public List<User> findByGroupId(String groupId);
 
+    public User findByFacebookId(String facebookId);
+
 }

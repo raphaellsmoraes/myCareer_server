@@ -39,17 +39,23 @@ public class UserResource {
 
         LOGGER.info(user.toString());
 
-        User newUser = userRepository.save(User.newUser(user));
+        if (userRepository.findByFacebookId(user.getFacebookId()) != null) {
 
-        ArrayList<Profession> profession = new ArrayList<Profession>();
+            return new ResponseEntity<>(userRepository.findByFacebookId(user.getFacebookId()), HttpStatus.OK);
 
-        for (Occupation occupation : occupationRepository.findAll()) {
-            profession.add(new Profession(occupation, -1.0 /* myCareerUtils.randInt(-1, 5)*/));
+        } else {
+
+            User newUser = userRepository.save(User.newUser(user));
+            ArrayList<Profession> profession = new ArrayList<Profession>();
+
+            for (Occupation occupation : occupationRepository.findAll()) {
+                profession.add(new Profession(occupation, -1.0 /* myCareerUtils.randInt(-1, 5)*/));
+            }
+
+            newUser.setProfessions(profession);
+
+            return new ResponseEntity<>(userRepository.save(newUser), HttpStatus.OK);
         }
-
-        newUser.setProfessions(profession);
-
-        return new ResponseEntity<>(userRepository.save(newUser), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/ocuppations", method = RequestMethod.POST, consumes = "application/json")
@@ -111,8 +117,8 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/getOccupation", method = RequestMethod.GET)
-    public ResponseEntity<String> getOccupation(@RequestParam("id") String id) {
-        return new ResponseEntity<>(occupationRepository.findOne(id).getTitle(), HttpStatus.OK);
+    public ResponseEntity<Occupation> getOccupation(@RequestParam("id") String id) {
+        return new ResponseEntity<>(occupationRepository.findOne(id), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
@@ -131,7 +137,7 @@ public class UserResource {
      * algorithm filter users based on Demographic correlation (Location, gender and age), it also features
      * their ratings on each product, the output will be a list with the items most appealing to the user */
     @RequestMapping(value = "/recommendations", method = RequestMethod.GET)
-    public ResponseEntity<String> getRecommendations(@RequestParam("id") String id) {
+    public ResponseEntity<ArrayList<Prediction>> getRecommendations(@RequestParam("id") String id) {
 
          /* Retrieve all users to cluster */
         User baseUser = userRepository.findOne(id);
@@ -154,15 +160,16 @@ public class UserResource {
             ArrayList<Prediction> predictions = PredictionUtils.getPredictions(baseUser, neighborhood);
             Collections.sort(predictions);
 
-            String result = "";
-            for (Prediction n : predictions) {
-                result = result + " /" + n.getId() + ":" + n.getPrediction() + "\n";
-            }
-
-            return new ResponseEntity<>(result, HttpStatus.OK);
+            return new ResponseEntity<>(predictions, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("id not found", HttpStatus.BAD_REQUEST);
+            ArrayList<Prediction> predictions = new ArrayList<>();
+            return new ResponseEntity<>(predictions, HttpStatus.OK);
         }
+    }
 
+    @RequestMapping(value = "/trending", method = RequestMethod.GET)
+    public ResponseEntity<ArrayList<Occupation>> getTrending() {
+
+        return new ResponseEntity<>(new ArrayList<Occupation>(), HttpStatus.OK);
     }
 }
