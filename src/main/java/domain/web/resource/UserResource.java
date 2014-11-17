@@ -168,8 +168,13 @@ public class UserResource {
     }
 
     @RequestMapping(value = "/trending", method = RequestMethod.GET)
-    public ResponseEntity<ArrayList<Occupation>> getTrending() {
+    public ResponseEntity<ArrayList<Trending>> getTrending() {
 
-        return new ResponseEntity<>(new ArrayList<Occupation>(), HttpStatus.OK);
+        List<User> userList = userRepository.findAll();
+        List<Occupation> occupationList = occupationRepository.findAll();
+
+        ArrayList<Trending> trending = ClusterUtils.getTrendingOccupations(userList, occupationList);
+
+        return new ResponseEntity<>(trending, HttpStatus.OK);
     }
 }

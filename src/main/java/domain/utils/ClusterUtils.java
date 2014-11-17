@@ -573,6 +573,39 @@ returns an neighborhood of users based on demographics (Age, gender and birthday
         return neighborhood;
     }
 
+        /* @getTrendingOccupations
+    returns an neighborhood of users based on demographics (Age, gender and birthday)
+        */
+    public static ArrayList<Trending> getTrendingOccupations(List<User> users, List<Occupation> occupations) {
+
+        ArrayList<Trending> trendingRecommendation = new ArrayList<>();
+
+        /* Realizar somatoria dos ratings de cada profissão encontrada */
+
+        for (Occupation oc : occupations) {
+            Integer sumRating = 0;
+            Integer sumUser = 0;
+
+            for (User u : users) {
+            /* Profissões já avaliadas pelo usuario */
+                for (Profession up : u.getProfessions()) {
+                    if (up.getOccupation().getId().equals(oc.getId())) {
+                        if (up.getRating() != -1) {
+                            sumRating = sumRating + (int) up.getRating();
+                            sumUser = sumUser++;
+                        }
+                    }
+                }
+            }
+
+            if (sumUser != 0) {
+                trendingRecommendation.add(new Trending(oc, (double) (sumRating / sumUser)));
+            }
+        }
+
+        return trendingRecommendation;
+    }
+
     /* Merge Demographic and Normal Correlation and retrieve an List of Users */
     public static ArrayList<Neighbor> getMergedCorrelations(User baseUser, List<User> filteredUsers) {
 

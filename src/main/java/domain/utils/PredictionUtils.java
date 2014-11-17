@@ -132,7 +132,7 @@ public class PredictionUtils {
         return occupations;
     }
 
-    private static ArrayList<Profession> getRatedProfessions(User user) {
+    public static ArrayList<Profession> getRatedProfessions(User user) {
         ArrayList<Profession> professions = new ArrayList<>();
 
         for (Profession n : user.getProfessions()) {
