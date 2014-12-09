@@ -174,6 +174,7 @@ public class UserResource {
         List<Occupation> occupationList = occupationRepository.findAll();
 
         ArrayList<Trending> trending = ClusterUtils.getTrendingOccupations(userList, occupationList);
+        Collections.sort(trending);
 
         return new ResponseEntity<>(trending, HttpStatus.OK);
     }

@@ -1,6 +1,5 @@
 package domain.model;
 
-import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.io.Serializable;
@@ -9,28 +8,30 @@ import java.io.Serializable;
  * Created by rapha_000 on 15/08/2014.
  */
 @Document(collection = "trending")
-public class Trending implements Serializable {
+public class Trending implements Serializable, Comparable<Trending> {
 
-    @Id
-    private String id;
     private Occupation occupation;
-    private double rating;
+    private double rating_medio;
+    private double rating_total;
+    private int n_votes;
+    private double bayesian;
 
-    public Trending(Occupation occupation, double rating) {
-        //this.id = UUID.randomUUID().toString();
+
+    public Trending(Occupation occupation, double rating_total, int n_votes) {
+        this.rating_total = rating_total;
+        this.n_votes = n_votes;
         this.occupation = occupation;
-        this.rating = rating;
+    }
+
+    public double getRating_total() {
+        return rating_total;
+    }
+
+    public void setRating_total(double rating_total) {
+        this.rating_total = rating_total;
     }
 
     public Trending() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public Occupation getOccupation() {
@@ -41,20 +42,41 @@ public class Trending implements Serializable {
         this.occupation = occupation;
     }
 
-    public double getRating() {
-        return rating;
+    public double getRating_medio() {
+        return rating_medio;
     }
 
-    public void setRating(double rating) {
-        this.rating = rating;
+    public void setRating_medio(double rating_medio) {
+        this.rating_medio = rating_medio;
+    }
+
+    public int getN_votes() {
+        return n_votes;
+    }
+
+    public void setN_votes(int n_votes) {
+        this.n_votes = n_votes;
+    }
+
+    public double getBayesian() {
+        return bayesian;
+    }
+
+    public void setBayesian(double bayesian) {
+        this.bayesian = bayesian;
+    }
+
+    @Override
+    public int compareTo(Trending o) {
+        return new Double(bayesian).compareTo(o.bayesian);
     }
 
     @Override
     public String toString() {
-        return "Profession{" +
-                "id='" + id + '\'' +
-                ", occupation=" + occupation +
-                ", rating=" + rating +
+        return "Trending{" +
+                "occupation=" + occupation +
+                ", rating_medio=" + rating_medio +
+                ", n_votes=" + n_votes +
                 '}';
     }
 }

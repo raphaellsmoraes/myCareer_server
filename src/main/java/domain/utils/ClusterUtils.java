@@ -524,7 +524,8 @@ public class ClusterUtils {
                             users.get(i),
                             pearsonsCorrelation.correlation(
                                     ArrayUtils.toPrimitive(similarArray.toArray(new Double[similarArray.size()]))
-                                    , ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()]))))
+                                    , ArrayUtils.toPrimitive(baseArray.toArray(new Double[baseArray.size()])))
+                    )
             );
         }
 
@@ -565,7 +566,9 @@ returns an neighborhood of users based on demographics (Age, gender and birthday
                             pearsonsCorrelation.correlation(
                                     ArrayUtils.toPrimitive(similarArray.toArray(new Double[similarArray.size()]))
                                     , ArrayUtils.toPrimitive(udemBaseUser.toDoubleArray().toArray(
-                                            new Double[udemBaseUser.toDoubleArray().size()]))))
+                                            new Double[udemBaseUser.toDoubleArray().size()]))
+                            )
+                    )
             );
 
         }
@@ -573,37 +576,65 @@ returns an neighborhood of users based on demographics (Age, gender and birthday
         return neighborhood;
     }
 
-        /* @getTrendingOccupations
-    returns an neighborhood of users based on demographics (Age, gender and birthday)
-        */
+    /* @getTrendingOccupations
+returns an neighborhood of users based on demographics (Age, gender and birthday)
+    */
     public static ArrayList<Trending> getTrendingOccupations(List<User> users, List<Occupation> occupations) {
 
-        ArrayList<Trending> trendingRecommendation = new ArrayList<>();
+        ArrayList<Trending> trending = new ArrayList<>();
+        double ratingTotalAvaliacoes = 0.0;
+        int navaliacoestotais = 0;
+        double minvotos = 2;
 
-        /* Realizar somatoria dos ratings de cada profissão encontrada */
+        for (User user : users) {
+            for (Profession prof : user.getProfessions()) {
+                if (prof.getRating() > 0) {
+                    Trending newTrend = new Trending(prof.getOccupation(), prof.getRating(), 1);
+                    Boolean isFound = false;
 
-        for (Occupation oc : occupations) {
-            Integer sumRating = 0;
-            Integer sumUser = 0;
+                    for (int i = 0; i <= trending.size() - 1; i++) {
+                        if (trending.get(i).getOccupation().getOnet_soc() == newTrend.getOccupation().getOnet_soc()) {
+                            double rating = trending.get(i).getRating_total() + newTrend.getRating_total();
+                            int nvotes = trending.get(i).getN_votes() + 1;
 
-            for (User u : users) {
-            /* Profissões já avaliadas pelo usuario */
-                for (Profession up : u.getProfessions()) {
-                    if (up.getOccupation().getId().equals(oc.getId())) {
-                        if (up.getRating() != -1) {
-                            sumRating = sumRating + (int) up.getRating();
-                            sumUser = sumUser++;
+                            trending.get(i).setRating_total(rating);
+                            trending.get(i).setN_votes(nvotes);
+                            isFound = true;
                         }
+                    }
+
+                    if (!isFound) {
+                        trending.add(newTrend);
                     }
                 }
             }
-
-            if (sumUser != 0) {
-                trendingRecommendation.add(new Trending(oc, (double) (sumRating / sumUser)));
-            }
         }
 
-        return trendingRecommendation;
+        for (int i = 0; i <= trending.size() - 1; i++) {
+            ratingTotalAvaliacoes = trending.get(i).getRating_total() + ratingTotalAvaliacoes;
+            navaliacoestotais = trending.get(i).getN_votes() + navaliacoestotais;
+
+            trending.get(i).setRating_medio(
+                    trending.get(i).getRating_total()
+                            /
+                            trending.get(i).getN_votes()
+            );
+        }
+
+        for (int i = 0; i <= trending.size() - 1; i++) {
+            int n_votos_aux = trending.get(i).getN_votes();
+            double m_media_aux = trending.get(i).getRating_medio();
+            double media_rating_total = ratingTotalAvaliacoes / navaliacoestotais;
+
+            trending.get(i).setBayesian(
+                    ((n_votos_aux * m_media_aux) + (minvotos * media_rating_total))
+                            /
+                            (n_votos_aux * minvotos)
+            );
+        }
+
+        return trending;
+
     }
 
     /* Merge Demographic and Normal Correlation and retrieve an List of Users */
@@ -623,7 +654,8 @@ returns an neighborhood of users based on demographics (Age, gender and birthday
                     neighboors.add(new Neighbor(normalSimilarity.get(i).getUser(),
                             (normalSimilarity.get(i).getCorrelation() +
                                     (normalSimilarity.get(i).getCorrelation()
-                                            * demographicSimillarity.get(i).getCorrelation()))));
+                                            * demographicSimillarity.get(i).getCorrelation()))
+                    ));
                 }
             }
             return neighboors;
